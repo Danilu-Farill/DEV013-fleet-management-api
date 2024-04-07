@@ -1,0 +1,2 @@
+//prisma generate
+
