@@ -7,17 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model taxis {
+model Taxis {
   id           Int            @id
-  plate        String?
-  trajectories trajectories[]
+  plate        String
+  Trajectories Trajectories[]
 }
 
-model trajectories {
-  id        Int       @id @default(autoincrement())
-  taxi_id   Int?
-  date      DateTime? @db.Timestamp(6)
-  latitude  Float?
-  longitude Float?
-  taxis     taxis?    @relation(fields: [taxi_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_taxis")
+model Trajectories {
+  id        Int      @id(map: "trajectories_pkey") @default(autoincrement())
+  taxi_id   Int
+  date      DateTime @db.Timestamp(6)
+  latitude  Float
+  longitude Float
+  Taxis     Taxis    @relation(fields: [taxi_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_taxis")
 }

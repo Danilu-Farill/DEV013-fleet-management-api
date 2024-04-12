@@ -1,47 +1,56 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
 const express_1 = __importDefault(require("express"));
-const prisma = new client_1.PrismaClient();
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        // ... you will write your Prisma Client queries here
-        //   const createPlate = await prisma.taxis.create({//crear placa
-        //   data: {
-        //     plate: "0001"
-        //   }
-        // });
-        // console.log(createPlate);
-        const allUsers = yield prisma.trajectories.findMany(); //buscar
-        console.log(allUsers);
-    });
-}
-main();
-// .then(async () => {
-//   await prisma.$disconnect()
-// })
-// .catch(async (e) => {
-//   console.error(e)
-//   await prisma.$disconnect()
-//   process.exit(1)
-// })
-//desconectar la base de datos
+const taxi_routes_1 = __importDefault(require("./routes/taxi.routes"));
+const swagger_1 = __importDefault(require("./swagger"));
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerSetup from './swagger';
+// import swaggerSpec from './swagger'
+// import swaggerJSDoc from "swagger-jsdoc";
+//import { swaggerOptions } from './swagger';
+//PARA USAR CON SWAGGER AUTOGEN
+// import swaggerOutput from "swagger_output.json";
+// import swaggerUi from "swagger-ui-express";
+// import swaggerOutput from "./swagger";
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 const app = (0, express_1.default)();
-app.get("/", function (req, resp) {
-    resp.send("taxis");
+const PORT = 3000;
+app.use(express_1.default.json());
+//rutas declaradas
+app.use(taxi_routes_1.default);
+//swagger
+// //const configSwagger = swaggerJSDoc(swaggerOptions);
+// //app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup))
+app.use(swagger_1.default);
+app.listen(PORT, () => {
+    console.log('SERVER IS UP ON PORT:', PORT);
 });
-app.listen(3000, () => {
-    console.log("servidor conectado 3000");
-});
+// // app.get('/', async (req, res):Promise<void> => {
+// //   res.send({message: "taxis activos"}).status(200);
+// // });
+// // const taxiRouter = Router();
+// // async function main() {
+// //     const allUsers = await prisma.taxis.findMany()//buscar
+// //     console.log(allUsers)
+// //   }
+// //   main()
+// // app.get("/", function(req: Request, resp: Response) {
+// //   resp.send("taxis");
+// // })
+// // app.listen(3000, () => {
+// //     console.log("servidor conectado 3000");
+// // })
+// // app.use('/', async (req: Request, res: Response): Promise<void> => {
+// //   const allUsers = await prisma.taxis.findMany()
+// //     console.log(allUsers)
+// //   res.send(allUsers);
+// // });
+// /*
+// // import swaggerUi from "swagger-ui-express"; 
+// // import swaggerOutput from "./swagger_output.json"; ESTO LO DEBO DE AGREGAR DESDE TYPESCRIpT CONFIG
+// // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(SwaggerUiOptions));
+// */
