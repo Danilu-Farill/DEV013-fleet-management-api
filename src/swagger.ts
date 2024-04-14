@@ -58,6 +58,7 @@
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
+import { format } from 'path';
 
 const routerSwagger = express.Router();
 
@@ -68,7 +69,7 @@ const options = {
         info: {
             title: 'Documentation taxis',
             version: '1.0.0',
-            description: 'Documentation for your API',
+            description: 'Documentation for my API',
             },
             servers: [{ url: 'http://localhost:3000' }],
             components: {
@@ -77,10 +78,12 @@ const options = {
                         type: "object",
                         properties: {
                             id: {
-                                type: "integer"
+                                type: "integer",
+                                example: 10133,
                             },
                             plate: {
                                 type: "string",
+                                example: "PAOF-6727"
                             },
                         },
                     },
@@ -88,22 +91,75 @@ const options = {
                         type: "object",
                         properties: {
                             id: {
-                                type: "integer"
+                                type: "integer",
+                                format: "int64",
+                                example: 8
                             },
                             taxi_id: {
-                                type: "integer"
+                                type: "integer",
+                                format: "int32",
+                                example: 10133
                             },
                             date: {
-                                type: "string"
+                                type: "string",
+                                format: "date-time",
+                                example: "2008-02-02 13:47:59"
                             },
                             latitude: {
-                                type: "number"
+                                type: "number",
+                                format: "int64",
+                                example: 116.37659
                             },
                             longitude: {
-                                type: "number"
+                                type: "number",
+                                format: "int64",
+                                example: 39.85567
+                            }
+                        }
+                    },
+                    Parameters: {
+                    skipParam: {
+                        name: "_skip",
+                        in: "query",
+                        description: "número del que partir",
+                        example: 50,
+                        schema: {
+                            type: "integer"
+                        }
+                    },
+                    takeParam: {
+                        name: "_take",
+                        in: "query",
+                        description: "cantidad mostrada",
+                        example: 5,
+                        schema: {
+                            type: "integer"
+                        }
+                    }
+                    },
+                    Error: {
+                        type: "object",
+                        properties: {
+                            // code: {
+                            //     description: "Código de error",
+                            //     type: "string"
+                            // },
+                            // status: {
+                            //     description: "httpstatus",
+                            //     type: "integer",
+                            //     format: "int32",
+                            // },
+                            // type: {
+                            //     type: "string",
+                            //     description: "Tipo de error",
+                            // },
+                            message: {
+                                type: "string",
+                                description: "Mensaje de error"
                             }
                         }
                     }
+
                 }
                                 
             }
@@ -111,8 +167,8 @@ const options = {
     apis: ['./src/routes/*.ts'],
 };
   
-  const swaggerSpec = swaggerJSDoc(options);
-  routerSwagger.use('/api-docs', swaggerUi.serve);
+const swaggerSpec = swaggerJSDoc(options);
+routerSwagger.use('/api-docs', swaggerUi.serve);
 routerSwagger.get('/api-docs', swaggerUi.setup(swaggerSpec));
 
 export default routerSwagger;

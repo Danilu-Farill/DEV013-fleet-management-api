@@ -62,13 +62,60 @@ const options = {
     swaggerDefinition: {
         openapi: '3.0.0',
         info: {
-            title: 'API dklsl',
+            title: 'Documentation taxis',
             version: '1.0.0',
-            description: 'Documentation for your API',
+            description: 'Documentation for my API',
         },
         servers: [{ url: 'http://localhost:3000' }],
+        components: {
+            schemas: {
+                Taxis: {
+                    type: "object",
+                    properties: {
+                        id: {
+                            type: "integer",
+                            example: 10133
+                        },
+                        plate: {
+                            type: "string",
+                            example: "PAOF-6727"
+                        },
+                    },
+                },
+                Trajectories: {
+                    type: "object",
+                    properties: {
+                        id: {
+                            type: "integer",
+                            format: "int64",
+                            example: 8
+                        },
+                        taxi_id: {
+                            type: "integer",
+                            format: "int32",
+                            example: 10133
+                        },
+                        date: {
+                            type: "string",
+                            format: "date-time",
+                            example: "2008-02-02 13:47:59"
+                        },
+                        latitude: {
+                            type: "number",
+                            format: "int64",
+                            example: 116.37659
+                        },
+                        longitude: {
+                            type: "number",
+                            format: "int64",
+                            example: 39.85567
+                        }
+                    }
+                }
+            }
+        }
     },
-    apis: ['./src/routes/*.ts'], // Ruta de los archivos de rutas de tu API
+    apis: ['./src/routes/*.ts'],
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 routerSwagger.use('/api-docs', swagger_ui_express_1.default.serve);

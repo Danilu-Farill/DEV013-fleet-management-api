@@ -1,5 +1,6 @@
 import express, { Application } from 'express';
 import router from './routes/taxi.routes';
+import routerTrajectories from './routes/trajectories.routes';
 import routerSwagger from "./swagger";
 
 // import swaggerUi from 'swagger-ui-express';
@@ -22,7 +23,7 @@ const PORT: number = 3000;
 app.use(express.json());
 
 //rutas declaradas
-app.use(router);
+app.use(router, routerTrajectories);
 
 //swagger
 // //const configSwagger = swaggerJSDoc(swaggerOptions);

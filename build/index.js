@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const taxi_routes_1 = __importDefault(require("./routes/taxi.routes"));
+const trajectories_routes_1 = __importDefault(require("./routes/trajectories.routes"));
 const swagger_1 = __importDefault(require("./swagger"));
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerSetup from './swagger';
@@ -20,7 +20,7 @@ const app = (0, express_1.default)();
 const PORT = 3000;
 app.use(express_1.default.json());
 //rutas declaradas
-app.use(taxi_routes_1.default);
+app.use(trajectories_routes_1.default);
 //swagger
 // //const configSwagger = swaggerJSDoc(swaggerOptions);
 // //app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
