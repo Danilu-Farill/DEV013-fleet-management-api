@@ -28,24 +28,24 @@ const routerTrajectories: Router = express.Router();
  *        '400':
  *            description: 'Solicitud incorrecta'
  *        '404':
- *            description: 'Taxis no encontrado'
+ *            description: 'Trajectoria no encontrada'
  *        '500':
  *              description: 'Error Interno del Servidor'
  *    post:
  *      tags:
  *      - trajectories
  *      summary: "Crear placas"
- *      description: Endpoint para crear las placas de taxis
+ *      description: Endpoint para crear trajectorias
  *      requestBody:
- *        description: crear una nueva placa de taxi
+ *        description: crear una trajectoria
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Taxis'
+ *              $ref: '#/components/schemas/Trajectories'
  *        required: true
  *      responses: 
  *        '201':
- *           description: Placas creadas con éxito.
+ *           description: Trajectoria creada con éxito.
  *           content: 
  *              application/json: 
  *                  schema:
@@ -66,19 +66,19 @@ const routerTrajectories: Router = express.Router();
  *    put:
  *      tags:
  *      - trajectories
- *      summary: "Actualizar placas"
- *      description: Endpoint para actualizar las placas de los taxis
+ *      summary: "Actualizar trajectoria"
+ *      description: Endpoint para actualizar la trajectoria
  *      parameters:
  *        - name: taxiID
  *          in: path
- *          description: Se necesita el ID para actualizar una placa
+ *          description: Se necesita el ID para actualizar una trajectoria
  *          required: true
  *          schema: 
  *              type: integer
  *              format: int64
- *      operationId: updatePlate
+ *      operationId: updateTrajectories
  *      requestBody:
- *        description: actualiza una placa en existencia
+ *        description: actualiza una trajectoria en existencia
  *        content:
  *          application/json:
  *            schema:
@@ -86,7 +86,7 @@ const routerTrajectories: Router = express.Router();
  *        required: true
  *      responses: 
  *        '200':
- *           description: Placa actualizada con éxito.
+ *           description: Trajectoria actualizada con éxito.
  *           content: 
  *              application/json: 
  *                  schema:
@@ -100,7 +100,7 @@ const routerTrajectories: Router = express.Router();
  *                    schema:
  *                           $ref: '#/components/schemas/Error'
  *        '404':
- *            description: 'Taxi no encontrado'
+ *            description: 'Trajectoria no encontrado'
  *            content:
  *                 application/json:
  *                    schema:
@@ -114,19 +114,19 @@ const routerTrajectories: Router = express.Router();
  *    delete:
  *      tags:
  *      - trajectories
- *      summary: "Eliminar placas"
- *      description: Endpoint para obtener las placas y id de todos los taxis
+ *      summary: "Eliminar trajectoria"
+ *      description: Endpoint para eliminar la trajectoria de un taxi
  *      parameters:
  *        - name: taxiID
  *          in: path
- *          description: Se necesita el ID para eliminar una placa
+ *          description: Se necesita el ID para eliminar una trajectoria
  *          required: true
  *          schema: 
  *              type: integer
  *              format: int64
  *      responses: 
  *        '200':
- *           description: Placa elimnada con éxito.
+ *           description: Trajectoria elimnada con éxito.
  *           content: 
  *              application/json: 
  *                  schema:
@@ -140,7 +140,7 @@ const routerTrajectories: Router = express.Router();
  *                    schema:
  *                           $ref: '#/components/schemas/Error'
  *        '404':
- *              description: 'Taxis no encontrado'
+ *              description: 'Trajectoria no encontrado'
  *              content:
  *                 application/json:
  *                    schema:
@@ -154,20 +154,20 @@ const routerTrajectories: Router = express.Router();
  *    get:
  *      tags:
  *      - trajectories
- *      summary: "Obtener una placa por ID"
- *      description: Endpoint para obtener una placa por ID
- *      operationId: obtener una placa
+ *      summary: "Obtener una trajectoria por ID"
+ *      description: Endpoint para obtener una trajectoria por ID
+ *      operationId: obtener una trajectoria
  *      parameters:
  *        - name: taxiID
  *          in: path
- *          description: ID del taxi
+ *          description: ID de la trajectoria
  *          required: true
  *          schema: 
  *              type: integer
  *              format: int64
  *      responses: 
  *        '200':
- *           description: Placa obtenida con éxito.
+ *           description: Trajectoria obtenida con éxito.
  *           content: 
  *              application/json: 
  *                  schema:
@@ -181,7 +181,7 @@ const routerTrajectories: Router = express.Router();
  *                    schema:
  *                           $ref: '#/components/schemas/Error'
  *        '404':
- *            description: 'Taxi no encontrado'
+ *            description: 'Trajectoria no encontrada'
  *            content:
  *                 application/json:
  *                    schema:
@@ -195,16 +195,14 @@ const routerTrajectories: Router = express.Router();
  */
 
 
+routerTrajectories.get('/trajectories', getAllTrajectories);
+routerTrajectories.get('/trajectories/:id', getIdTrajectories);
+// router.post('/trajectories', createTrajectories);
+// taxiRouter.put('/:id', createPlate);
+// taxiRouter.delete('/:id', createPlate);
 
 
-
-
-
-
-
-
-
-
+export default routerTrajectories;
 
 
 
@@ -235,13 +233,3 @@ const routerTrajectories: Router = express.Router();
 //  *        '500':
 //  *              description: 'Error Interno del Servidor'
 //  */
-
-routerTrajectories.get('/trajectories', getAllTrajectories);
-routerTrajectories.get('/trajectories/:id', getIdTrajectories);
-// router.post('/trajectories', createTrajectories);
-// taxiRouter.put('/:id', createPlate);
-// taxiRouter.delete('/:id', createPlate);
-
-
-export default routerTrajectories;
-

@@ -55,18 +55,140 @@ export const createPlate = async (req: Request, resp: Response) => {
     }
 }
 
-
-
-
 // export const updatePlate = async (req: Request, resp: Response) => {
 //     try {
 //         const findId = req.params.id;
 //         const idNumber = parseInt(findId)
 //         const body = req.body;
-//         const create = await prismaTaxi.update({where: idNumber }, {data: body});
+//         const create = await prisma.update({where: idNumber }, {data: body});
 //         resp.status(201).json({create});
         
 //     } catch (error) {
 //         resp.status(404).send("No encontado")
 //     }
-// }
+// };
+
+export const deletePlate = async (req: Request, resp: Response) => {
+    try {
+        const id: string = req.params.id;
+        const idNumber:number = parseInt(id)
+        // if (!id) {
+        //     return resp.status(400).send('Debe proporcionar un id o una placa');
+        // };
+
+        // const findId: number = await prisma.findUnique({
+        //         where: {
+        //             id: idNumber 
+        //         }
+        //     });
+        const deleteUid = await prisma.delete({
+            where: {
+                id: idNumber
+            }
+        })
+        resp.status(201).json({deleteUid});     
+    } catch (error) {
+        resp.status(404).send("No encontado")
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+EJEMPLO DE delete CON DOS REVISAR:
+const { uid } = req.params;
+        console.log("🚀 ~ deletePlate ~ uid:", uid, req.params, req.body.id, req.body.plate)
+        // const findId: string = req.params.id;
+        // const plate: string = req.params.plate;
+        // // const { id, plate} = req.params
+        // if (!findId && !plate) {
+        //     return resp.status(400).send('Debe proporcionar un id o una placa');
+        // };
+
+        let identifier;
+        if(!isNaN(Number(uid))) {
+            identifier = await prisma.findUnique({
+                where: {
+                    id: parseInt(uid)
+                }
+            });
+        }
+        const deleteUid = await prisma.delete({
+            where: {
+                id: identifier
+            }
+        })
+
+        // if(uid) {
+        //     identifier = await prisma.deleteMany({
+        //         where: {
+        //             id: parseInt(uid)
+        //         }
+        //     });
+        // } else {
+        //     identifier = await prisma.deleteMany({
+        //         where: {
+        //             plate: uid
+        //         }
+        //     });
+        // }
+
+
+
+
+
+        // if(findId) {
+        //     const idNumber: number = parseInt(findId)
+        //     identifier = await prisma.deleteMany({
+        //         where: {
+        //             id: idNumber
+        //         }
+        //     });
+        // } else if(plate){
+        //     identifier = await prisma.deleteMany({
+        //         where: {
+        //             plate: plate
+        //         }
+        //     });
+        // }
+
+
+        // if(id){
+        //     identifier = id;
+        //     parseInt(identifier)
+        // } else {
+        //     identifier = plate;
+        // };
+        // const findTaxis = await prisma.findUnique({
+        //     where: {
+        //         identifier
+        //     },
+        // })
+
+        // if(findId) {
+        //     const idNumber: number = parseInt(findId)
+        //     identifier = idNumber;
+        // } else if(plate){
+        //     identifier = plate;
+        // }
+
+        //  const create = await prisma.delete({
+        //     where: {
+        //         id: identifier
+        //     }
+        // });
+*/
