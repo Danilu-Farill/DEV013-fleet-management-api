@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { getAllTrajectories, getIdTrajectories } from '../controller/trajectories.controller';
+import { getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation} from '../controller/trajectories.controller';
 
 const routerTrajectories: Router = express.Router();
 
@@ -195,11 +195,17 @@ const routerTrajectories: Router = express.Router();
  */
 
 
-routerTrajectories.get('/trajectories', getAllTrajectories);
-routerTrajectories.get('/trajectories/:id', getIdTrajectories);
-// router.post('/trajectories', createTrajectories);
-// taxiRouter.put('/:id', createPlate);
-// taxiRouter.delete('/:id', createPlate);
+routerTrajectories.get('/trajectories', getAll);
+routerTrajectories.get('/trajectoriesBody', getBody);//esta esta hecha con el body
+routerTrajectories.get('/date/:date', getDate);//esta la voy hacer con date
+routerTrajectories.get('/trajectorieTaxi/:taxi_id', getID);//esta la voy hacer con id
+routerTrajectories.get('/trajectories/:taxi_id', getTrajectories);//esta la voy hacer con id y date
+routerTrajectories.get('/:date/:taxi_id', getTrajectories);//esta la voy hacer con id y date
+routerTrajectories.get('/location/:taxi_id', getLocation);//esta la voy hacer con longitud y latitud
+
+routerTrajectories.post('/trajectories', createTrajectories);
+// routerTrajectories.put('/trajectories/:id', );
+// routerTrajectories.delete('/trajectories/:id', );
 
 
 export default routerTrajectories;

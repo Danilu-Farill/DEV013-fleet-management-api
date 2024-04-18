@@ -4,14 +4,13 @@ import express, { Request, Response } from 'express';
 const prisma = new PrismaClient().taxis;
 
 export const getAllPlate = async (req: Request, resp: Response) => {//: Promise<void>
-    
     try {
         const skip : number = parseInt(req.query.skip as string)??0;
         const take : number = parseInt(req.query.take as string)??10;
 
         const findAllPlate = await prisma.findMany({
-            // skip: skip,
-            // take: take
+            skip: skip,
+            take: take
         });
         resp.json({findAllPlate}); 
     } catch (error) {
@@ -19,12 +18,10 @@ export const getAllPlate = async (req: Request, resp: Response) => {//: Promise<
     }
 };
 
-
-
 export const getIdTaxis = async (req: Request, resp: Response) => {
     try { 
         const idTaxi = req.params.id;
-        const idNumber = parseInt(idTaxi)
+        const idNumber = parseInt(idTaxi);
         
         const findAllPlate = await prisma.findUnique({
             where: {
@@ -38,8 +35,7 @@ export const getIdTaxis = async (req: Request, resp: Response) => {
         //         id: idNumber,
         //         plate: plate
         //     }
-        // });
-        
+        // });    
     } catch (error) {
         resp.status(404).send("Id no encontado")
     }
@@ -55,28 +51,34 @@ export const createPlate = async (req: Request, resp: Response) => {
     }
 }
 
-// export const updatePlate = async (req: Request, resp: Response) => {
-//     try {
-//         const findId = req.params.id;
-//         const idNumber = parseInt(findId)
-//         const body = req.body;
-//         const create = await prisma.update({where: idNumber }, {data: body});
-//         resp.status(201).json({create});
-        
-//     } catch (error) {
-//         resp.status(404).send("No encontado")
-//     }
-// };
+export const updatePlate = async (req: Request, resp: Response) => {
+    try {
+        const findId = req.params.id;
+        console.log("🚀 ~ updatePlate ~ findId:", findId)
+        const idNumber = parseInt(findId)
+        const body = req.body;
+        console.log("🚀 ~ updatePlate ~ body:", body)
+        const create = await prisma.update({
+            where: {
+                id: idNumber,
+            },
+                data: body
+        });
+        resp.status(201).json({create});
+    } catch (error) {
+        resp.status(404).send("No actualizado")
+    }
+};
 
 export const deletePlate = async (req: Request, resp: Response) => {
     try {
-        const id: string = req.params.id;
-        const idNumber:number = parseInt(id)
+        const id : string = req.params.id;
+        const idNumber : number = parseInt(id);
         // if (!id) {
         //     return resp.status(400).send('Debe proporcionar un id o una placa');
         // };
 
-        // const findId: number = await prisma.findUnique({
+        // const findId = await prisma.findUnique({
         //         where: {
         //             id: idNumber 
         //         }

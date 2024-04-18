@@ -1,6 +1,6 @@
 //import { Router } from "express";
 import express, { Router } from 'express';
-import { createPlate, deletePlate, getAllPlate, getIdTaxis } from "../controller/taxi.controller";
+import { createPlate, deletePlate, getAllPlate, getIdTaxis, updatePlate } from "../controller/taxi.controller";
 
 //const taxiRouter = Router();
 const router: Router = express.Router();
@@ -40,7 +40,7 @@ const router: Router = express.Router();
  *                 application/json:
  *                    schema:
  *                           $ref: '#/components/schemas/Error'
-  *    post:
+ *    post:
  *      tags:
  *      - taxis
  *      summary: "Crear placas"
@@ -207,8 +207,8 @@ const router: Router = express.Router();
 router.get('/taxis', getAllPlate);
 router.get('/taxis/:id', getIdTaxis);
 router.post('/taxis', createPlate);
-// taxiRouter.put('/:id', createPlate);
-router.delete('/taxis/:uid', deletePlate);
+router.put('/taxis/:id', updatePlate);
+router.delete('/taxis/:id', deletePlate);
 
 
 
