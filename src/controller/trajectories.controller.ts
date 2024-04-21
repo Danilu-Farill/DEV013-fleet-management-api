@@ -2,13 +2,14 @@ import { PrismaClient } from '@prisma/client'
 import express, { Request, Response } from 'express';
 
 const prisma = new PrismaClient().trajectories;
+const query = new PrismaClient();
+
 
 //skip: APARTIR DE QUE NÚMERO DE PÁGINA SE MUESTRA
 const getAll = async (req: Request, resp: Response) => {//: Promise<void>
     try {
         const skip : number = parseInt(req.query.skip as string)??0;
         const take : number = parseInt(req.query.take as string)??10;
-
         const findAllPlate = await prisma.findMany({
             skip: skip,
             take: take
@@ -19,12 +20,162 @@ const getAll = async (req: Request, resp: Response) => {//: Promise<void>
     }
 };
 
+const getTrajectories = async (req: Request, resp: Response) => {
+    try { 
+        const skip : number = parseInt(req.query.skip as string)??0;
+        const take : number = parseInt(req.query.take as string)??10;
+        // const taxi_id = req.params.taxi_id;
+        const taxi_id = req.query.taxi_id as string;
+        const date = req.query.date as string;
+        const endDate = new Date(date);
+        const StartDate = new Date(date);
+        endDate.setDate(endDate.getDate()+1);
+
+        const findAllPlate = await prisma.findMany({
+            skip: skip,
+            take: take,
+            where: {
+                taxi_id: parseInt(taxi_id),
+                date: {
+                    gte: StartDate,//MAYOR IGUAL QUE
+                    lt: endDate//menor que
+                }
+            },
+            select: {
+                date: true,
+                taxi_id: true,
+                latitude: true,
+                longitude: true
+            }
+        });
+        resp.status(200).json({findAllPlate});    
+    } catch (error) {
+        console.log("🚀 ~ getIdTrajectories ~ error:", error)
+        resp.status(404).send("data y id no encontado")
+    }
+};
+
+const getLocation = async (req: Request, resp: Response) => {
+    try { 
+        const skip : number = parseInt(req.query.skip as string)??0;
+        const take : number = parseInt(req.query.take as string)??10;
+        // const taxi_id = req.params.taxi_id;
+        // const date = req.query.date as string;
+        // const latitude = req.query.latitude as string;
+        // const longitude = req.query.longitude as string;
+
+        // // const { date, longitude, latitude } = req.query as any;
+        // const endDate = new Date(date);
+        // const StartDate = new Date(date);
+        // endDate.setDate(endDate.getDate()+1);
+
+        // const findAllPlate = await prisma.findMany({
+        //     // skip: skip,
+        //     // take: take,
+        //     where: {
+        //         taxi_id: parseInt(taxi_id),
+        //         date: {
+        //             gte: StartDate,//MAYOR IGUAL QUE
+        //             lt: endDate//menor que
+        //         },
+        //         latitude: parseFloat(latitude),
+        //         longitude: parseFloat(longitude)
+        //     },
+        //     select: {
+        //         date: true,
+        //         taxi_id: true,
+        //         latitude: true,
+        //         longitude: true
+        //     }
+        // });
+        const findAllPlate = await query.$queryRaw`
+        SELECT t.taxi_id, t."date", t.latitude, t.longitude
+        FROM "Trajectories" as t
+        INNER JOIN (
+            SELECT tj.taxi_id, MAX(tj."date") AS max_date
+            FROM "Trajectories" AS tj
+            GROUP BY tj.taxi_id) as t2
+            ON t.taxi_id = t2.taxi_id AND t."date" = t2.max_date
+            INNER JOIN "Taxis" AS tx 
+            ON t.taxi_id = tx.id
+            GROUP BY t.taxi_id, t."date", t.latitude, t.longitude;
+        `
+        resp.status(200).json({findAllPlate});     
+    } catch (error) {
+        console.log("🚀 ~ getIdTrajectories ~ error:", error)
+        resp.status(404).send("location no encontado")
+    }
+};
+
+const createTrajectories = async (req: Request, resp: Response) => {
+    /*
+    SELECT * 
+FROM public."Trajectories"
+WHERE taxi_id = 5; 	
+    */
+    try {
+        const {taxi_id, date, latitude, longitude } = req.body;
+        const newDate = new Date(date);
+        const create = await prisma.create({            
+           data:{
+                taxi_id: taxi_id,//PRIMERO SE CREA LA PLACA DEL TAXI Y DE AHI SE AGREGA O SE CREA ESTO NUEVO SOBRE LO CREADO
+                date: newDate, 
+                latitude: parseFloat(latitude),
+                longitude: parseFloat(longitude),
+           }
+        });
+        console.log("🚀 ~ createTrajectories ~ create:", create)
+        resp.status(201).json({data: create});  
+    } catch (error: any) {
+        console.log("🚀 ~ createTrajectories ~ error:", error)
+        resp.status(500).send("No creado")
+    }
+};
+
+// const putTrajectories = async (req: Request, resp: Response) => {
+//     try {
+//         const id: string = req.params.id;
+//         const taxi_id = req.body.taxi_id;
+
+//         // const taxi_id: string = req.params.taxi_id;
+//         const deleteTrajectories = await prisma.delete({
+//             where: {
+//                 id: parseInt(id)
+//             },
+//             data: {
+//                 taxi_id: taxi_id
+//             }
+//     });
+//         resp.status(200).json({deleteTrajectories})
+        
+//     } catch (error) {
+//         console.log("🚀 ~ createTrajectories ~ error:", error)
+//         resp.status(500).send("No borrado")
+//     }
+// }
+
+const deleteTrajectories = async (req: Request, resp: Response) => {
+    try {
+        const id: string = req.params.id;
+        // const taxi_id: string = req.params.taxi_id;
+        const deleteTrajectories = await prisma.delete({
+            where: {
+                id: parseInt(id)
+            }
+    });
+        resp.status(200).json({deleteTrajectories})
+        
+    } catch (error) {
+        console.log("🚀 ~ createTrajectories ~ error:", error)
+        resp.status(500).send("No borrado")
+    }
+}
+
 const getBody = async (req: Request, resp: Response) => {
     try { 
         const skip : number = parseInt(req.query.skip as string)??0;
         const take : number = parseInt(req.query.take as string)??10;
-        const { taxi_id, date, longitude, latitude } = req.body;
-        console.log("🚀 ~ getTrajectories ~ date:", date, date.toString())
+        const { taxi_id, date } = req.body;
 
         const findAllPlate = await prisma.findMany({
             skip: skip,
@@ -141,107 +292,68 @@ const getID = async (req: Request, resp: Response) => {
     }
 };
 
-const getTrajectories = async (req: Request, resp: Response) => {
-    try { 
-        // const skip : number = parseInt(req.query.skip as string)??0;
-        // const take : number = parseInt(req.query.take as string)??10;
-        const taxi_id = req.params.taxi_id;
-        const date = req.query.date as string;
-        const endDate = new Date(date);
-        const StartDate = new Date(date);
-        endDate.setDate(endDate.getDate()+1);
-
-        const findAllPlate = await prisma.findMany({
-            // skip: skip,
-            // take: take,
-            where: {
-                taxi_id: parseInt(taxi_id),
-                date: {
-                    gte: StartDate,//MAYOR IGUAL QUE
-                    lt: endDate//menor que
-                }
-            },
-            select: {
-                date: true,
-                taxi_id: true,
-                latitude: true,
-                longitude: true
-            }
-        });
-        resp.status(200).json({findAllPlate});    
-    } catch (error) {
-        console.log("🚀 ~ getIdTrajectories ~ error:", error)
-        resp.status(404).send("data y id no encontado")
-    }
-};
-
-const getLocation = async (req: Request, resp: Response) => {
-    try { 
-        // const skip : number = parseInt(req.query.skip as string)??0;
-        // const take : number = parseInt(req.query.take as string)??10;
-        const taxi_id = req.params.taxi_id;
-        const date = req.query.date as string;
-        const latitude = req.query.latitude as string;
-        const longitude = req.query.longitude as string;
-
-
-        // const { date, longitude, latitude } = req.query as any;
-        const endDate = new Date(date);
-        const StartDate = new Date(date);
-        endDate.setDate(endDate.getDate()+1);
-
-        const findAllPlate = await prisma.findMany({
-            // skip: skip,
-            // take: take,
-            where: {
-                taxi_id: parseInt(taxi_id),
-                date: {
-                    gte: StartDate,//MAYOR IGUAL QUE
-                    lt: endDate//menor que
-                },
-                latitude: parseFloat(latitude),
-                longitude: parseFloat(longitude)
-            },
-            select: {
-                date: true,
-                taxi_id: true,
-                latitude: true,
-                longitude: true
-            }
-        });
-        resp.status(200).json({findAllPlate});     
-    } catch (error) {
-        console.log("🚀 ~ getIdTrajectories ~ error:", error)
-        resp.status(404).send("location no encontado")
-    }
-};
-
-const createTrajectories = async (req: Request, resp: Response) => {
-    /*
-    SELECT * 
-FROM public."Trajectories"
-WHERE taxi_id = 5; 	
-    */
+const lastTrajectory = async (req: Request, resp: Response) => {
+// const lastTrajectory: RequestHandler = async (req, res) => {
     try {
-        const {taxi_id, date, latitude, longitude} = req.body;
-        const newDate = new Date();
-        const create = await prisma.create({            
-           data:{
-                taxi_id: taxi_id,//PRIMERO SE CREA LA PLACA DEL TAXI Y DE AHI SE AGREGA O SE CREA ESTO NUEVO SOBRE LO CREADO
-                date: newDate, 
-                latitude: parseFloat(latitude),
-                longitude: parseFloat(longitude)
-           }
-        });
-        console.log("🚀 ~ createTrajectories ~ create:", create)
-        resp.status(201).json({data: create});  
-    } catch (error: any) {
-        console.log("🚀 ~ createTrajectories ~ error:", error)
-        resp.status(500).send("No creado")
+        const { page = 1, limit = 10 } = req.query
+        const skipResults = (+page - 1) * Number(limit)
+        const findTrajectories = await prisma.findMany({
+            include: {
+                Taxis: true
+            },
+            // where: {
+            //     gte: 
+            // },
+            // select: {
+            //     // taxi_id: true,
+            //     // longitude: true,
+            //     // latitude: true,
+            //     // date: true,
+            //     taxis: {
+            //         select: {
+            //             plate: true
+            //         }
+            //     }
+            // },
+            skip: skipResults,
+            take: (+limit > 0) ? +limit : undefined
+        })
+//         // const result = await prisma.$queryRaw`select * from trajectories t
+//         // join (
+//         //     select
+//         //         taxi_id, max(id) as id_, max("date") as max_date
+//         //     from trajectories t
+//         //     group by taxi_id
+//         // ) as t2
+//         // on t2.id_ = t.id;`
+//     //     const result = await prisma.$queryRaw`select
+//     //     t.*,
+//     //     tx.plate
+//     // from
+//     //     trajectories t
+//     // join taxis tx on tx.id = t.taxi_id
+//     // where t.id in (select max(id) from trajectories t group by taxi_id);`
+// // const result = await prisma.$queryRaw`select t.taxi_id, t."date", t.latitude, t.longitude, tx.plate
+//         // from trajectories as t
+//         // inner join (
+//         //     select tj.taxi_id, MAX(tj."date") as max_date
+//         //     from trajectories as tj
+//         //     group by tj.taxi_id
+//         // ) as t2
+//         // on t.taxi_id = t2.taxi_id and t."date" = t2.max_date
+//         // inner join taxis as tx
+//         // on t.taxi_id = tx.id
+//         // group by t.taxi_id, t."date", t.latitude, t.longitude, tx.plate;`
+        resp.json({
+            data: findTrajectories
+        })
+    } catch (error) {
+        console.log(error)
+        resp.status(500).send()
     }
 }
 
-export {getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation}
+export {getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation, deleteTrajectories, lastTrajectory}
 
 
 

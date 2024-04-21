@@ -29,7 +29,9 @@ const router: Router = express.Router();
  *                  schema:
  *                      type: array
  *                      items:
- *                          $ref: '#/components/schemas/Taxis'
+ *                        oneOf:
+ *                          - $ref: '#/components/schemas/Taxis/taxiExample1'
+ *                          - $ref: '#/components/schemas/Taxis/taxiExample2'
  *        '400':
  *            description: 'Solicitud incorrecta'
  *        '404':
@@ -50,7 +52,7 @@ const router: Router = express.Router();
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Taxis'
+ *              $ref: '#/components/schemas/Taxis/taxiExample1'
  *        required: true
  *      responses: 
  *        '201':
@@ -60,7 +62,7 @@ const router: Router = express.Router();
  *                  schema:
  *                      type: array
  *                      items:
- *                          $ref: '#/components/schemas/Taxis'
+ *                          $ref: '#/components/schemas/Taxis/taxiExample1'
  *        '400':
  *            description: 'Solicitud incorrecta'
  *        '404':
@@ -91,7 +93,7 @@ const router: Router = express.Router();
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Taxis'
+ *              $ref: '#/components/schemas/Taxis/taxiExample2'
  *        required: true
  *      responses: 
  *        '200':
@@ -101,7 +103,7 @@ const router: Router = express.Router();
  *                  schema:
  *                      type: array
  *                      items:
- *                          $ref: '#/components/schemas/Taxis'
+ *                          $ref: '#/components/schemas/Taxis/taxiExample2'
  *        '400':
  *            description: 'Solicitud incorrecta'
  *            content:
@@ -141,7 +143,7 @@ const router: Router = express.Router();
  *                  schema:
  *                      type: array
  *                      items:
- *                          $ref: '#/components/schemas/Taxis'
+ *                          $ref: '#/components/schemas/Taxis/taxiExample2'
  *        '400':
  *              description: 'Solicitud incorrecta'
  *              content:
