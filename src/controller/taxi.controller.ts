@@ -12,7 +12,7 @@ export const getAllPlate = async (req: Request, resp: Response) => {//: Promise<
             skip: skip,
             take: take
         });
-        resp.json({findAllPlate}); 
+        resp.send({findAllPlate}); 
     } catch (error) {
         resp.status(404).send("No encontado")
     }
@@ -44,6 +44,9 @@ export const getIdTaxis = async (req: Request, resp: Response) => {
 export const createPlate = async (req: Request, resp: Response) => {
     try {
         const {id, plate} = req.body;
+        if (!id && !plate) {
+            resp.status(400).json("No hay nada que agregar");  
+        }
         const create = await prisma.create({data:{id: id, plate: plate,}});
         resp.status(201).json({data: create});  
     } catch (error: any) {

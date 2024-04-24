@@ -36,7 +36,7 @@ app.listen(PORT, (): void => {
 });
 
 
-
+export default app;
 
 
 

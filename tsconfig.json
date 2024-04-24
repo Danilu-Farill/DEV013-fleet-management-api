@@ -106,10 +106,14 @@
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
-  // },
-  // "include": [
-  //   "./build/wagger-output.json",  // Agrega esta línea para incluir archivos JSON en el directorio "build"
-  //   "./src/swagger-output.json",
-  // ],
-},
+  },
+  "include": [
+    // "./build/wagger-output.json",  // Agrega esta línea para incluir archivos JSON en el directorio "build"
+    // "./src/swagger-output.json",
+    "src/*", 
+    "test/foo.test.ts", 
+    //"client.ts", "singleton.ts"
+  ],
+// },
+// "exclude": ["test"]
 }

@@ -100,6 +100,27 @@ const getLocation = async (req: Request, resp: Response) => {
             ON t.taxi_id = tx.id
             GROUP BY t.taxi_id, t."date", t.latitude, t.longitude;
         `
+        /*
+        -- 2da
+        select
+	t.*,
+	tx.plate
+from
+	"Trajectories" t
+join "Taxis" tx on tx.id = t.taxi_id
+where t.id in (select max(id) from "Trajectories" t group by taxi_id);
+
+
+-- 3era
+select * from "Trajectories" t
+join (
+	select
+		taxi_id, max(id) as max_id, max("date") as max_date
+	from "Trajectories" t
+	group by taxi_id
+) as t2
+on t2.max_id = t.id;
+        */
         resp.status(200).json({findAllPlate});     
     } catch (error) {
         console.log("🚀 ~ getIdTrajectories ~ error:", error)
@@ -354,8 +375,6 @@ const lastTrajectory = async (req: Request, resp: Response) => {
 }
 
 export {getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation, deleteTrajectories, lastTrajectory}
-
-
 
 
 // const getTrajectoriesAllID = async (req: Request, resp: Response) => {
