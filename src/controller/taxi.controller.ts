@@ -1,100 +1,103 @@
 import { PrismaClient } from '@prisma/client'
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
+// import prisma2 from '../connect';
 
 const prisma = new PrismaClient().taxis;
 
 export const getAllPlate = async (req: Request, resp: Response) => {//: Promise<void>
-    try {
-        const skip : number = parseInt(req.query.skip as string)??0;
-        const take : number = parseInt(req.query.take as string)??10;
-
-        const findAllPlate = await prisma.findMany({
-            skip: skip,
-            take: take
-        });
-        resp.send({findAllPlate}); 
-    } catch (error) {
-        resp.status(404).send("No encontado")
-    }
+  try {
+    const skip : number = parseInt(req.query.skip as string)??0;
+    const take : number = parseInt(req.query.take as string)??10;
+    const findAllPlate = await prisma.findMany({
+      skip: skip,
+      take: take
+    });
+    resp.status(200).json(findAllPlate); 
+  } catch (error) {
+    resp.status(404).json("No encontado")
+  }
 };
 
 export const getIdTaxis = async (req: Request, resp: Response) => {
-    try { 
-        const idTaxi = req.params.id;
-        const idNumber = parseInt(idTaxi);
+  try { 
+    const idTaxi = req.params.id;
+    const idNumber = parseInt(idTaxi);
         
-        const findAllPlate = await prisma.findUnique({
-            where: {
-                id: idNumber,
-            }
-        });
-        resp.json({findAllPlate});
-        // const plate = req.params.plate;
-        // const findAllPlate = await prismaTaxi.findMany({
-        //     where: {
-        //         id: idNumber,
-        //         plate: plate
-        //     }
-        // });    
-    } catch (error) {
-        resp.status(404).send("Id no encontado")
-    }
+    const findAllPlate = await prisma.findUnique({
+      where: {
+        id: idNumber,
+      }
+    });
+    resp.json(findAllPlate);
+    // const plate = req.params.plate;
+    // const findAllPlate = await prismaTaxi.findMany({
+    //     where: {
+    //         id: idNumber,
+    //         plate: plate
+    //     }
+    // });    
+  } catch (error) {
+    resp.status(404).json("Id no encontado")
+  }
 }
 
 export const createPlate = async (req: Request, resp: Response) => {
-    try {
-        const {id, plate} = req.body;
-        if (!id && !plate) {
-            resp.status(400).json("No hay nada que agregar");  
-        }
-        const create = await prisma.create({data:{id: id, plate: plate,}});
-        resp.status(201).json({data: create});  
-    } catch (error: any) {
-        resp.status(500).send("No creado")
+  try {
+    const {id, plate} = req.body;
+    if (!id && !plate) {
+      return resp.status(400).json("No hay nada que agregar");  
     }
+    const create = await prisma.create({data:{id: id, plate: plate,}});
+    resp.status(201).json(create);  
+  } catch (error: any) {
+    resp.status(500).send("No creado")
+  }
 }
 
 export const updatePlate = async (req: Request, resp: Response) => {
-    try {
-        const findId = req.params.id;
-        console.log("🚀 ~ updatePlate ~ findId:", findId)
-        const idNumber = parseInt(findId)
-        const body = req.body;
-        console.log("🚀 ~ updatePlate ~ body:", body)
-        const create = await prisma.update({
-            where: {
-                id: idNumber,
-            },
-                data: body
-        });
-        resp.status(201).json({create});
-    } catch (error) {
-        resp.status(404).send("No actualizado")
-    }
+  try {
+    const findId = req.params.id;
+    const idNumber = parseInt(findId)
+    const body = req.body;
+    // if(!findId || !body){
+    //   return resp.status(400).json("No hay nada que actualizar"); 
+    // }
+    const update = await prisma.update({
+      where: {
+        id: idNumber,
+      },
+      data: body
+    });
+    resp.status(200).json(update);
+  } catch (error) {
+    resp.status(404).send("No actualizado")
+  }
 };
 
 export const deletePlate = async (req: Request, resp: Response) => {
-    try {
-        const id : string = req.params.id;
-        const idNumber : number = parseInt(id);
-        // if (!id) {
-        //     return resp.status(400).send('Debe proporcionar un id o una placa');
-        // };
-
-        // const findId = await prisma.findUnique({
-        //         where: {
-        //             id: idNumber 
-        //         }
-        //     });
-        const deleteUid = await prisma.delete({
-            where: {
-                id: idNumber
-            }
-        })
-        resp.status(201).json({deleteUid});     
-    } catch (error) {
-        resp.status(404).send("No encontado")
-    }
+  try {
+    const id : string = req.params.id;
+    const idNumber : number = parseInt(id);
+    // if(!idNumber){
+    //   return resp.status(400).json("No hay nada que borrar"); 
+    // }
+    // if (!id) {
+    //     return resp.status(400).send('Debe proporcionar un id o una placa');
+    // };
+    // const findId = await prisma.findUnique({
+    //         where: {
+    //             id: idNumber 
+    //         }
+    //     });
+    const deleteUid = await prisma.delete({
+      where: {
+        id: idNumber
+      }
+    })
+    resp.status(200).json(deleteUid);     
+  } catch (error) {
+    resp.status(404).send("No encontado")
+  }
 }
 
 

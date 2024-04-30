@@ -1,0 +1,61 @@
+// {
+//     "env": {
+//         "es2021": true,
+//         "node": true
+//     },
+//     "extends": "standard-with-typescript",
+//     "parserOptions": {
+//         "ecmaVersion": "latest",
+//         "sourceType": "module"
+//     },
+//     "rules": {
+//         "@typescript-eslint/indent": ["error", 4],
+//         "@typescript-eslint/comma-dangle": "off",
+//         "@typescript-eslint/no-misused-promises": "off",
+//         "@typescript-eslint/strict-boolean-expressions": "off",
+//         "object-curly-newline": "off"
+//     }
+// }
+
+// {
+//   "env": {
+//     "es2021": true,
+//     "node": true
+//   },
+//   "extends": "eslint:recommended",
+//   "rules": {
+//     "no-console": "warn",
+//     "import/extensions": 0,
+//     "no-var": "error",
+//     "prefer-const": "error",
+//     "eqeqeq": "error",
+//     "indent": ["error", 2]
+//   }
+// }
+
+
+{
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "no-console": "warn",
+    "import/extensions": 0,
+    "no-var": "error",
+    "prefer-const": "error",
+    "eqeqeq": "error",
+    "indent": ["error", 2],
+    "@typescript-eslint/no-explicit-any": "off"
+  }
+}

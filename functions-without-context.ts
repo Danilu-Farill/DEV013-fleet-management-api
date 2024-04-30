@@ -1,6 +1,4 @@
-import { error } from 'node:console'
 import prisma from './client'
-
 
 // interface CreateUser {
 //   id: number
@@ -22,26 +20,26 @@ interface GetTaxi {
     acceptTermsAndConditions: boolean
   }
   
-  export async function getTaxis(taxi: GetTaxi) {
-    if (taxi.acceptTermsAndConditions) {
-      return await prisma.taxis.findMany({})
-    } else {
-      return new Error('taxis must accept terms!')
-    }
+export async function getTaxis(taxi: GetTaxi) {
+  if (taxi.acceptTermsAndConditions) {
+    return await prisma.taxis.findMany({})
+  } else {
+    return new Error('taxis must accept terms!')
   }
+}
 
 interface CreateTaxi {
     id: number
     plate: string
   }
   
-  export async function createTaxi(taxi: CreateTaxi) {
-    // if(!taxi.id) {
-    //     return Response.json("error")
-    // } else{
-      return await prisma.taxis.create({data: taxi})
-    // }
-  }
+export async function createTaxi(taxi: CreateTaxi) {
+  // if(!taxi.id) {
+  //     return Response.json("error")
+  // } else{
+  return await prisma.taxis.create({data: taxi})
+  // }
+}
 
 interface UpdateUser {
   id: number

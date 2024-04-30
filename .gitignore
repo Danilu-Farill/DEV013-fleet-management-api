@@ -4,3 +4,10 @@ node_modules
 
 
     # "test": "echo \"Error: no test specified\" && exit 1"
+
+# jest --verbose --coverage test/: Este es el comando que se ejecuta cuando corres npm test. Desglosado:
+# jest: Es el comando para ejecutar Jest.
+# --verbose: Es una opción que indica a Jest que muestre información detallada sobre la ejecución de las pruebas.
+# --coverage: Es una opción que indica a Jest que genere un informe de cobertura después de ejecutar las pruebas.
+# test/: Es el directorio donde Jest buscará y ejecutará los archivos de prueba. En este caso, parece que todos los archivos de prueba están en un directorio llamado test.
+# Entonces, cuando ejecutas npm test, Jest ejecuta todos los archivos de prueba en el directorio test/, muestra información detallada sobre la ejecución de las pruebas y genera un informe de cobertura al final.
