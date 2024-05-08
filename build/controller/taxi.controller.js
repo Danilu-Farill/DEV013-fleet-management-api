@@ -25,7 +25,7 @@ const getAllPlate = (req, resp) => __awaiter(void 0, void 0, void 0, function* (
         resp.status(200).json(findAllPlate);
     }
     catch (error) {
-        resp.status(404).json("No encontado");
+        resp.status(404).json("No encontrado");
     }
 });
 exports.getAllPlate = getAllPlate;
@@ -71,9 +71,9 @@ const updatePlate = (req, resp) => __awaiter(void 0, void 0, void 0, function* (
         const findId = req.params.id;
         const idNumber = parseInt(findId);
         const body = req.body;
-        if (!findId || !body) {
-            return resp.status(400).json("No hay nada que actualizar");
-        }
+        // if(!findId && !body){
+        //   return resp.status(400).json("No hay nada que actualizar"); 
+        // }
         const update = yield prisma.update({
             where: {
                 id: idNumber,
@@ -92,7 +92,7 @@ const deletePlate = (req, resp) => __awaiter(void 0, void 0, void 0, function* (
         const id = req.params.id;
         const idNumber = parseInt(id);
         // if(!idNumber){
-        //     return resp.status(400).json("No hay nada que borrar"); 
+        //   return resp.status(400).json("No hay nada que borrar"); 
         // }
         // if (!id) {
         //     return resp.status(400).send('Debe proporcionar un id o una placa');

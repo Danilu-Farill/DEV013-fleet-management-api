@@ -9,89 +9,76 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getQueryRawLocation = exports.getQueryTrajectories = exports.getAllTrajectories = void 0;
+exports.getQueryTrajectories = exports.getAllTrajectories = void 0;
 const client_1 = require("@prisma/client");
+// import type { IQuery } from "../interface/interface"
 const prisma = new client_1.PrismaClient().trajectories;
-const query = new client_1.PrismaClient();
+// const query = new PrismaClient();
 const getAllTrajectories = (skip, take) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const findAllPlate = yield prisma.findMany({
-            skip: skip,
-            take: take
-        });
-        return findAllPlate;
-    }
-    catch (error) {
-        return "Error del servidor";
-    }
+    const findAllPlate = yield prisma.findMany({
+        skip: skip,
+        take: take
+    });
+    return findAllPlate;
 });
 exports.getAllTrajectories = getAllTrajectories;
 const getQueryTrajectories = (id, StartDate, endDate, skip, take) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const findAllPlate = yield prisma.findMany({
-            skip: skip,
-            take: take,
-            where: {
-                taxi_id: parseInt(id),
-                date: {
-                    gte: StartDate, //MAYOR IGUAL QUE
-                    lt: endDate //menor que
-                }
-            },
-            select: {
-                date: true,
-                taxi_id: true,
-                latitude: true,
-                longitude: true
+    const findAllPlate = yield prisma.findMany({
+        skip: skip,
+        take: take,
+        where: {
+            taxi_id: parseInt(id),
+            date: {
+                gte: StartDate, //MAYOR IGUAL QUE
+                lt: endDate //menor que
             }
-        });
-        return findAllPlate;
-    }
-    catch (error) {
-        return "data y id no encontado";
-    }
+        },
+        select: {
+            date: true,
+            taxi_id: true,
+            latitude: true,
+            longitude: true
+        }
+    });
+    return findAllPlate;
 });
 exports.getQueryTrajectories = getQueryTrajectories;
-const getQueryRawLocation = (skip, take) => __awaiter(void 0, void 0, void 0, function* () {
-    const findAllLocation = yield query.$queryRaw `
-        SELECT t.taxi_id, t."date", t.latitude, t.longitude
-        FROM "Trajectories" as t
-        INNER JOIN (
-            SELECT tj.taxi_id, MAX(tj."date") AS max_date
-            FROM "Trajectories" AS tj
-            GROUP BY tj.taxi_id) as t2
-            ON t.taxi_id = t2.taxi_id AND t."date" = t2.max_date
-            INNER JOIN "Taxis" AS tx 
-            ON t.taxi_id = tx.id
-            GROUP BY t.taxi_id, t."date", t.latitude, t.longitude;
-            OFFSET ${skip} LIMIT ${take}
-        `;
-    /*
-    -- 2da
-    select
-t.*,
-tx.plate
-from
-"Trajectories" t
-join "Taxis" tx on tx.id = t.taxi_id
-where t.id in (select max(id) from "Trajectories" t group by taxi_id);
-    // OFFSET ${skip} LIMIT ${take};
-
-
-
--- 3era
-select * from "Trajectories" t
-join (
-select
-    taxi_id, max(id) as max_id, max("date") as max_date
-from "Trajectories" t
-group by taxi_id
-) as t2
-on t2.max_id = t.id;
-    */
-    return findAllLocation;
-});
-exports.getQueryRawLocation = getQueryRawLocation;
+// export const getQueryRawLocation = async(skip: number, take:number): Promise<any> => {
+//   const findAllLocation = await query.$queryRaw`
+//         SELECT t.taxi_id, t."date", t.latitude, t.longitude
+//         FROM "Trajectories" as t
+//         INNER JOIN (
+//             SELECT tj.taxi_id, MAX(tj."date") AS max_date
+//             FROM "Trajectories" AS tj
+//             GROUP BY tj.taxi_id) as t2
+//             ON t.taxi_id = t2.taxi_id AND t."date" = t2.max_date
+//             INNER JOIN "Taxis" AS tx 
+//             ON t.taxi_id = tx.id
+//             GROUP BY t.taxi_id, t."date", t.latitude, t.longitude;
+//             OFFSET ${skip} LIMIT ${take}
+//         `
+//   /*
+//         -- 2da
+//         select
+// 	t.*,
+// 	tx.plate
+// from
+// 	"Trajectories" t
+// join "Taxis" tx on tx.id = t.taxi_id
+// where t.id in (select max(id) from "Trajectories" t group by taxi_id);
+//         // OFFSET ${skip} LIMIT ${take};
+// -- 3era
+// select * from "Trajectories" t
+// join (
+// 	select
+// 		taxi_id, max(id) as max_id, max("date") as max_date
+// 	from "Trajectories" t
+// 	group by taxi_id
+// ) as t2
+// on t2.max_id = t.id;
+//         */
+//   return findAllLocation;
+// };
 // const findAllPlate = await query.$queryRaw`
 //         -- SELECT t.taxi_id, t."date", t.latitude, t.longitude
 //         -- FROM "Trajectories" as t

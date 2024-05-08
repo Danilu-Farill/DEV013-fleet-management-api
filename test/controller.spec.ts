@@ -1,5 +1,5 @@
 // CON DATA MOCK DE PRISMA
-import { getTaxis, createTaxi } from "../functions-without-context"
+import { getTaxis, createTaxi, updateTaxi } from "../functions-without-context"
 import { prismaMock } from "../singleton"
 
 test('Debería obtener el id y plate', async() => {
@@ -94,6 +94,35 @@ test('should create new taxi', async() => {
   await expect(createTaxi(taxi2)).resolves.toEqual({})
 });
 
+test('should update a taxi', async() => {
+  const taxi: any = {
+    id: 1,
+    plate: "DÍA-24",
+    acceptTermsAndConditions: true
+  };
+  // const taxi2: any = {};
+  // const taxis2: any = [{
+  //   id: 1,
+  //   plate: "DÍA-2468",
+  // },
+  // {
+  //   id: 2,
+  //   plate: "DÍA-1357",
+  // }];
+
+  prismaMock.taxis.update.mockResolvedValue(taxi)
+
+  await expect(updateTaxi(taxi)).resolves.toEqual({
+    id: 1,
+    plate: "DÍA-24",
+    acceptTermsAndConditions: true
+  });
+  // prismaMock.taxis.create.mockResolvedValue(taxi2)
+  // await expect(createTaxi(taxi2)).resolves.toEqual({})
+});
+
+
+
 
 //mock con jest
 
@@ -112,6 +141,9 @@ import { getAllPlate, getIdTaxis, createPlate, updatePlate, deletePlate } from "
 
 
 jest.mock('@prisma/client', () => {/*Aquí se esta mockeando el módulo @prisma/client. Básicamente, se le esta diciendo a Jest que cuando se importe @prisma/client en tu archivo, en lugar de importar el módulo real, debería importar el módulo mockeado que estás definiendo. */
+  const taxi1 = [
+    {id: 1, plate: "TAX-12"},
+    {id: 2, plate: "TAX-34"}]
   const mockTaxis = {
     taxis: {
       findMany: jest.fn().mockResolvedValue([//mockResolvedValue(valor): Configura la función mock para que siempre resuelva con el valor dado.

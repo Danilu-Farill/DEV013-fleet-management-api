@@ -41,14 +41,13 @@ export async function createTaxi(taxi: CreateTaxi) {
   // }
 }
 
-interface UpdateUser {
+interface UpdateTaxi {
   id: number
-  name: string
-  email: string
+  plate: string
 }
 
-export async function updateUsername(user: UpdateUser) {
-  return await prisma.trajectories.update({
+export async function updateTaxi(user: UpdateTaxi) {
+  return await prisma.taxis.update({
     where: { id: user.id },
     data: user,
   })

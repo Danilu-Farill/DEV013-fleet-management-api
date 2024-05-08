@@ -10,8 +10,9 @@
     "start": "npx tsc && node ./build/index.js",
     "devts": "ts-node-dev --respawn ./src/index.ts",
     "dev": "nodemon ./build/index.js",
-    "test": "jest --verbose --coverage test/",
-    "lint": "eslint . --ext .ts"
+    "test": "set NODE_ENV=test && jest --verbose --coverage test/",
+    "lint": "eslint . --ext .ts",
+    "cli": "node cli.js"
   },
   "keywords": [
     "node",

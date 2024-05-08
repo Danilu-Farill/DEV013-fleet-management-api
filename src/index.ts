@@ -18,7 +18,9 @@ import routerSwagger from "./swagger";
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 
 const app: Application = express();
-const PORT: number = 3000;
+// const PORT: number = 3000;
+const PORT: any = process.env.PORT ||  3000;
+
 
 app.use(express.json());
 
@@ -31,9 +33,12 @@ app.use(router, routerTrajectories);
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup))
 app.use(routerSwagger)
 
-app.listen(PORT, (): void => {
-  console.log('SERVER IS UP ON PORT:', PORT);
-});
+//condicional con el node_env sea distinto
+if(process.env.NODE_ENV !== 'test'){
+  app.listen(PORT, (): void => {
+    console.log('SERVER IS UP ON PORT:', PORT);
+  });
+}
 
 
 export default app;

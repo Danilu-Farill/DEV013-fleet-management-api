@@ -331,7 +331,7 @@ routerTrajectories.delete('/trajectories/:id', trajectories_controller_1.deleteT
 routerTrajectories.get('/trajectoriesBody', trajectories_controller_1.getBody); //esta esta hecha con el body
 routerTrajectories.get('/trajectories/date/:date', trajectories_controller_1.getDate); //esta la voy hacer con date
 routerTrajectories.get('/trajectorieTaxi/:taxi_id', trajectories_controller_1.getID); //esta la voy hacer con id
-routerTrajectories.get('/trajectories/lastTrajectory', trajectories_controller_1.lastTrajectory); //esta la voy hacer con prisma después
+// routerTrajectories.get('/trajectories/lastTrajectory', lastTrajectory);//esta la voy hacer con prisma después
 // routerTrajectories.get('/trajectories/:taxi_id', getTrajectories);//esta la voy hacer con id y date
 exports.default = routerTrajectories;
 // /**

@@ -28,7 +28,7 @@ const getAll = async (req: Request, resp: Response) => {//: Promise<void>
     const trajectories = await getAllTrajectories(take, skip)
     return resp.json(trajectories); 
   } catch (error) {
-    resp.status(404).json("No encontado")
+    resp.status(404).json("No encontrado")
   }
 };
 
@@ -83,7 +83,7 @@ const getTrajectories = async(req: Request, resp: Response) => {
     const findAllPlate = await getQueryTrajectories(taxi_id, startDate, endDate, skip, take);
     return resp.status(200).json(findAllPlate);    
   } catch (error) {
-    resp.status(400).send("data y id no encontado")
+    resp.status(400).send("data y id no encontrado")
   }
 };
 
@@ -92,8 +92,7 @@ const getLocation = async (req: Request, resp: Response) => {
     const skip : number = parseInt(req.query.skip as string)??0;
     const take : number = parseInt(req.query.take as string)??10;
     // const findLocation = getQueryRawLocation(skip, take)
-    if(!skip || !take)
-    {
+    if(!skip || !take){
       return resp.status(404).json("Falta especificar páginas")
     }
     const findLocation = await query.$queryRaw`
@@ -115,7 +114,7 @@ const getLocation = async (req: Request, resp: Response) => {
            `
     resp.status(200).json(findLocation);     
   } catch (error) {
-    resp.status(400).json("location no encontado")
+    resp.status(400).json("location no encontrado")
   }
 };
 
@@ -136,9 +135,8 @@ WHERE taxi_id = 5;
         longitude: parseFloat(longitude),
       }
     });
-    resp.status(201).json({data: create});  
+    resp.status(201).json(create);  
   } catch (error: any) {
-    console.log("🚀 ~ createTrajectories ~ error:", error)
     resp.status(500).send("No creado")
   }
 };
@@ -168,13 +166,12 @@ WHERE taxi_id = 5;
 const deleteTrajectories = async (req: Request, resp: Response) => {
   try {
     const id: string = req.params.id;
-    // const taxi_id: string = req.params.taxi_id;
     const deleteTrajectories = await prisma.delete({
       where: {
         id: parseInt(id)
       }
     });
-    resp.status(200).json({deleteTrajectories})
+    resp.status(200).json(deleteTrajectories)
         
   } catch (error) {
     resp.status(500).send("No borrado")
@@ -211,7 +208,6 @@ const getBody = async (req: Request, resp: Response) => {
     //     }
     // });     
   } catch (error) {
-    console.log("🚀 ~ getIdTrajectories ~ error:", error)
     resp.status(404).send("Body no encontado")
   }
 };
@@ -243,7 +239,6 @@ const getDate = async (req: Request, resp: Response) => {
     });  
     resp.status(200).json({findAllPlate});     
   } catch (error) {
-    console.log("🚀 ~ getIdTrajectories ~ error:", error)
     resp.status(404).send("Date no encontado")
   }
 };
@@ -279,7 +274,6 @@ const getID = async (req: Request, resp: Response) => {
         // });*/
 
     const { taxi_id } = req.params;
-    console.log("🚀 ~ getTrajectoriesAll ~ taxi_id:", req.params)
     const findAllPlate = await prisma.findMany({
       skip: skip,
       take: take,
@@ -293,74 +287,71 @@ const getID = async (req: Request, resp: Response) => {
         date: true  
       }
     });
-    console.log("🚀 ~ getTrajectoriesAllID ~ findAllPlate:", findAllPlate)
     resp.json({findAllPlate});   
   } catch (error) {
-    console.log("🚀 ~ getIdTrajectories ~ error:", error)
-    resp.status(404).send("datos no encontados(i)");
+    resp.status(404).send("datos no encontrados(i)");
   }
 };
 
-const lastTrajectory = async (req: Request, resp: Response) => {
-// const lastTrajectory: RequestHandler = async (req, res) => {
-  try {
-    const { page = 1, limit = 10 } = req.query
-    const skipResults = (+page - 1) * Number(limit)
-    const findTrajectories = await prisma.findMany({
-      include: {
-        Taxis: true
-      },
-      // where: {
-      //     gte: 
-      // },
-      // select: {
-      //     // taxi_id: true,
-      //     // longitude: true,
-      //     // latitude: true,
-      //     // date: true,
-      //     taxis: {
-      //         select: {
-      //             plate: true
-      //         }
-      //     }
-      // },
-      skip: skipResults,
-      take: (+limit > 0) ? +limit : undefined
-    })
-    //         // const result = await prisma.$queryRaw`select * from trajectories t
-    //         // join (
-    //         //     select
-    //         //         taxi_id, max(id) as id_, max("date") as max_date
-    //         //     from trajectories t
-    //         //     group by taxi_id
-    //         // ) as t2
-    //         // on t2.id_ = t.id;`
-    //     //     const result = await prisma.$queryRaw`select
-    //     //     t.*,
-    //     //     tx.plate
-    //     // from
-    //     //     trajectories t
-    //     // join taxis tx on tx.id = t.taxi_id
-    //     // where t.id in (select max(id) from trajectories t group by taxi_id);`
-    // // const result = await prisma.$queryRaw`select t.taxi_id, t."date", t.latitude, t.longitude, tx.plate
-    //         // from trajectories as t
-    //         // inner join (
-    //         //     select tj.taxi_id, MAX(tj."date") as max_date
-    //         //     from trajectories as tj
-    //         //     group by tj.taxi_id
-    //         // ) as t2
-    //         // on t.taxi_id = t2.taxi_id and t."date" = t2.max_date
-    //         // inner join taxis as tx
-    //         // on t.taxi_id = tx.id
-    //         // group by t.taxi_id, t."date", t.latitude, t.longitude, tx.plate;`
-    resp.json({data: findTrajectories})
-  } catch (error) {
-    console.log(error)
-    resp.status(500).send()
-  }
-}
+// const lastTrajectory = async (req: Request, resp: Response) => {
+// // const lastTrajectory: RequestHandler = async (req, res) => {
+//   try {
+//     const { page = 1, limit = 10 } = req.query
+//     const skipResults = (+page - 1) * Number(limit)
+//     const findTrajectories = await prisma.findMany({
+//       include: {
+//         Taxis: true
+//       },
+//       // where: {
+//       //     gte: 
+//       // },
+//       // select: {
+//       //     // taxi_id: true,
+//       //     // longitude: true,
+//       //     // latitude: true,
+//       //     // date: true,
+//       //     taxis: {
+//       //         select: {
+//       //             plate: true
+//       //         }
+//       //     }
+//       // },
+//       skip: skipResults,
+//       take: (+limit > 0) ? +limit : undefined
+//     })
+//     //         // const result = await prisma.$queryRaw`select * from trajectories t
+//     //         // join (
+//     //         //     select
+//     //         //         taxi_id, max(id) as id_, max("date") as max_date
+//     //         //     from trajectories t
+//     //         //     group by taxi_id
+//     //         // ) as t2
+//     //         // on t2.id_ = t.id;`
+//     //     //     const result = await prisma.$queryRaw`select
+//     //     //     t.*,
+//     //     //     tx.plate
+//     //     // from
+//     //     //     trajectories t
+//     //     // join taxis tx on tx.id = t.taxi_id
+//     //     // where t.id in (select max(id) from trajectories t group by taxi_id);`
+//     // // const result = await prisma.$queryRaw`select t.taxi_id, t."date", t.latitude, t.longitude, tx.plate
+//     //         // from trajectories as t
+//     //         // inner join (
+//     //         //     select tj.taxi_id, MAX(tj."date") as max_date
+//     //         //     from trajectories as tj
+//     //         //     group by tj.taxi_id
+//     //         // ) as t2
+//     //         // on t.taxi_id = t2.taxi_id and t."date" = t2.max_date
+//     //         // inner join taxis as tx
+//     //         // on t.taxi_id = tx.id
+//     //         // group by t.taxi_id, t."date", t.latitude, t.longitude, tx.plate;`
+//     resp.json({data: findTrajectories})
+//   } catch (error) {
+//     resp.status(500).send()
+//   }
+// }
 
-export {getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation, deleteTrajectories, lastTrajectory}
+export {getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation, deleteTrajectories, /*lastTrajectory*/}
 
 
 // const getTrajectoriesAllID = async (req: Request, resp: Response) => {

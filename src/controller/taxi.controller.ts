@@ -14,7 +14,7 @@ export const getAllPlate = async (req: Request, resp: Response) => {//: Promise<
     });
     resp.status(200).json(findAllPlate); 
   } catch (error) {
-    resp.status(404).json("No encontado")
+    resp.status(404).json("No encontrado")
   }
 };
 
@@ -59,7 +59,7 @@ export const updatePlate = async (req: Request, resp: Response) => {
     const findId = req.params.id;
     const idNumber = parseInt(findId)
     const body = req.body;
-    // if(!findId || !body){
+    // if(!findId && !body){
     //   return resp.status(400).json("No hay nada que actualizar"); 
     // }
     const update = await prisma.update({

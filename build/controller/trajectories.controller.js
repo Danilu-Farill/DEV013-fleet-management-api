@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lastTrajectory = exports.deleteTrajectories = exports.getLocation = exports.getTrajectories = exports.getDate = exports.getID = exports.createTrajectories = exports.getBody = exports.getAll = void 0;
+exports.deleteTrajectories = exports.getLocation = exports.getTrajectories = exports.getDate = exports.getID = exports.createTrajectories = exports.getBody = exports.getAll = void 0;
 const client_1 = require("@prisma/client");
 const trajectories_models_1 = require("../models/trajectories.models");
 const prisma = new client_1.PrismaClient().trajectories;
@@ -37,7 +37,7 @@ const getAll = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
         return resp.json(trajectories);
     }
     catch (error) {
-        resp.status(404).json("No encontado");
+        resp.status(404).json("No encontrado");
     }
 });
 exports.getAll = getAll;
@@ -85,12 +85,14 @@ const getTrajectories = (req, resp) => __awaiter(void 0, void 0, void 0, functio
         const endDate = new Date(date);
         const startDate = new Date(date);
         endDate.setDate(endDate.getDate() + 1);
+        if (!skip || !take || !taxi_id || !date) {
+            return resp.status(404).json("Faltan querys");
+        }
         const findAllPlate = yield (0, trajectories_models_1.getQueryTrajectories)(taxi_id, startDate, endDate, skip, take);
-        return resp.status(200).json({ findAllPlate });
+        return resp.status(200).json(findAllPlate);
     }
     catch (error) {
-        console.log("🚀 ~ getIdTrajectories ~ error:", error);
-        resp.status(404).send("data y id no encontado");
+        resp.status(400).send("data y id no encontrado");
     }
 });
 exports.getTrajectories = getTrajectories;
@@ -100,6 +102,9 @@ const getLocation = (req, resp) => __awaiter(void 0, void 0, void 0, function* (
         const skip = (_e = parseInt(req.query.skip)) !== null && _e !== void 0 ? _e : 0;
         const take = (_f = parseInt(req.query.take)) !== null && _f !== void 0 ? _f : 10;
         // const findLocation = getQueryRawLocation(skip, take)
+        if (!skip || !take) {
+            return resp.status(404).json("Falta especificar páginas");
+        }
         const findLocation = yield query.$queryRaw `
         SELECT t.taxi_id, t."date", t.latitude, t.longitude
         FROM "Trajectories" as t
@@ -120,17 +125,16 @@ const getLocation = (req, resp) => __awaiter(void 0, void 0, void 0, function* (
         resp.status(200).json(findLocation);
     }
     catch (error) {
-        console.log("🚀 ~ getIdTrajectories ~ error:", error);
-        resp.status(404).json("location no encontado");
+        resp.status(400).json("location no encontrado");
     }
 });
 exports.getLocation = getLocation;
 const createTrajectories = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     /*
-    SELECT *
-FROM public."Trajectories"
-WHERE taxi_id = 5;
-    */
+      SELECT *
+  FROM public."Trajectories"
+  WHERE taxi_id = 5;
+      */
     try {
         const { taxi_id, date, latitude, longitude } = req.body;
         const newDate = new Date(date);
@@ -142,11 +146,9 @@ WHERE taxi_id = 5;
                 longitude: parseFloat(longitude),
             }
         });
-        console.log("🚀 ~ createTrajectories ~ create:", create);
-        resp.status(201).json({ data: create });
+        resp.status(201).json(create);
     }
     catch (error) {
-        console.log("🚀 ~ createTrajectories ~ error:", error);
         resp.status(500).send("No creado");
     }
 });
@@ -173,16 +175,14 @@ exports.createTrajectories = createTrajectories;
 const deleteTrajectories = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
-        // const taxi_id: string = req.params.taxi_id;
         const deleteTrajectories = yield prisma.delete({
             where: {
                 id: parseInt(id)
             }
         });
-        resp.status(200).json({ deleteTrajectories });
+        resp.status(200).json(deleteTrajectories);
     }
     catch (error) {
-        console.log("🚀 ~ createTrajectories ~ error:", error);
         resp.status(500).send("No borrado");
     }
 });
@@ -218,7 +218,6 @@ const getBody = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
         // });     
     }
     catch (error) {
-        console.log("🚀 ~ getIdTrajectories ~ error:", error);
         resp.status(404).send("Body no encontado");
     }
 });
@@ -251,7 +250,6 @@ const getDate = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
         resp.status(200).json({ findAllPlate });
     }
     catch (error) {
-        console.log("🚀 ~ getIdTrajectories ~ error:", error);
         resp.status(404).send("Date no encontado");
     }
 });
@@ -276,18 +274,17 @@ const getID = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
         //     }
         // });
         /*
-                //ESTO SI ME REGRESA PERO SOLO UN ARCHIVO ID
-                // const { id } = req.params;
-                // console.log("🚀 ~ getTrajectoriesAll ~ taxi_id:", req.params)
-                // const findAllPlate = await prisma.findUnique({
-                //     // skip: skip,
-                //     // take: take,
-                //     where: {
-                //         id: parseInt(id),
-                //     }
-                // });*/
+            //ESTO SI ME REGRESA PERO SOLO UN ARCHIVO ID
+            // const { id } = req.params;
+            // console.log("🚀 ~ getTrajectoriesAll ~ taxi_id:", req.params)
+            // const findAllPlate = await prisma.findUnique({
+            //     // skip: skip,
+            //     // take: take,
+            //     where: {
+            //         id: parseInt(id),
+            //     }
+            // });*/
         const { taxi_id } = req.params;
-        console.log("🚀 ~ getTrajectoriesAll ~ taxi_id:", req.params);
         const findAllPlate = yield prisma.findMany({
             skip: skip,
             take: take,
@@ -301,77 +298,13 @@ const getID = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
                 date: true
             }
         });
-        console.log("🚀 ~ getTrajectoriesAllID ~ findAllPlate:", findAllPlate);
         resp.json({ findAllPlate });
     }
     catch (error) {
-        console.log("🚀 ~ getIdTrajectories ~ error:", error);
-        resp.status(404).send("datos no encontados(i)");
+        resp.status(404).send("datos no encontrados(i)");
     }
 });
 exports.getID = getID;
-const lastTrajectory = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
-    // const lastTrajectory: RequestHandler = async (req, res) => {
-    try {
-        const { page = 1, limit = 10 } = req.query;
-        const skipResults = (+page - 1) * Number(limit);
-        const findTrajectories = yield prisma.findMany({
-            include: {
-                Taxis: true
-            },
-            // where: {
-            //     gte: 
-            // },
-            // select: {
-            //     // taxi_id: true,
-            //     // longitude: true,
-            //     // latitude: true,
-            //     // date: true,
-            //     taxis: {
-            //         select: {
-            //             plate: true
-            //         }
-            //     }
-            // },
-            skip: skipResults,
-            take: (+limit > 0) ? +limit : undefined
-        });
-        //         // const result = await prisma.$queryRaw`select * from trajectories t
-        //         // join (
-        //         //     select
-        //         //         taxi_id, max(id) as id_, max("date") as max_date
-        //         //     from trajectories t
-        //         //     group by taxi_id
-        //         // ) as t2
-        //         // on t2.id_ = t.id;`
-        //     //     const result = await prisma.$queryRaw`select
-        //     //     t.*,
-        //     //     tx.plate
-        //     // from
-        //     //     trajectories t
-        //     // join taxis tx on tx.id = t.taxi_id
-        //     // where t.id in (select max(id) from trajectories t group by taxi_id);`
-        // // const result = await prisma.$queryRaw`select t.taxi_id, t."date", t.latitude, t.longitude, tx.plate
-        //         // from trajectories as t
-        //         // inner join (
-        //         //     select tj.taxi_id, MAX(tj."date") as max_date
-        //         //     from trajectories as tj
-        //         //     group by tj.taxi_id
-        //         // ) as t2
-        //         // on t.taxi_id = t2.taxi_id and t."date" = t2.max_date
-        //         // inner join taxis as tx
-        //         // on t.taxi_id = tx.id
-        //         // group by t.taxi_id, t."date", t.latitude, t.longitude, tx.plate;`
-        resp.json({
-            data: findTrajectories
-        });
-    }
-    catch (error) {
-        console.log(error);
-        resp.status(500).send();
-    }
-});
-exports.lastTrajectory = lastTrajectory;
 // const getTrajectoriesAllID = async (req: Request, resp: Response) => {
 //     try { 
 //         const { taxi_id, date } = req.params;

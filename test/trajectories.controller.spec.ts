@@ -90,8 +90,6 @@ describe('Trajectories', () => {
       const take = 2;
     
       const resp = await getAllTrajectories(skip, take);
-      // expect(typeof resp[0].latitude).toBe("number");
-      // expect(typeof resp[0].longitude).toBe("number");
       expect(typeof resp[0].date).toBe("string");
       expect(typeof resp[0].id).toBe("number");
       expect([resp[0], resp[1]]).toEqual(
@@ -113,6 +111,7 @@ describe('Trajectories', () => {
       // expect(resp[0]).not.toEqual({id: 2244, date: "2009-04-04", latitude: 114.246, longitude: 28.448},);
       // expect(resp[0].longitude).not.toEqual(28.448);
     });
+    
   });
   describe('getTrajectories', () => {
     it('Debería regresar las trajectorias por id, date y páginadas', async() => {
