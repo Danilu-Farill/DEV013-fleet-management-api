@@ -12,7 +12,9 @@
     "dev": "nodemon ./build/index.js",
     "test": "set NODE_ENV=test && jest --verbose --coverage test/",
     "lint": "eslint . --ext .ts",
-    "cli": "node cli.js"
+    "cli": "node cli.js",
+    "clits": "node script/cliTaxis.js",
+    "tsc": "tsc script/cliTaxis.ts"
   },
   "keywords": [
     "node",
@@ -25,6 +27,7 @@
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.5",
+    "@types/nodemailer": "^6.4.15",
     "@types/supertest": "^6.0.2",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.6",
@@ -44,6 +47,7 @@
   "dependencies": {
     "@prisma/client": "^5.12.1",
     "express": "^4.19.2",
+    "nodemailer": "^6.9.13",
     "nodemon": "^3.1.0",
     "pg": "^8.11.5",
     "superagent": "^8.1.2",

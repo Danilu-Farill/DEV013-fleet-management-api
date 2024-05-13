@@ -50,7 +50,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
-    "no-console": "warn",
+    // "no-console": "warn",
     "import/extensions": 0,
     "no-var": "error",
     "prefer-const": "error",

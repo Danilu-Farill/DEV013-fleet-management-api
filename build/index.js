@@ -18,7 +18,8 @@ const swagger_1 = __importDefault(require("./swagger"));
 // import swaggerOutput from "./swagger";
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 const app = (0, express_1.default)();
-const PORT = 3000;
+// const PORT: number = 3000;
+const PORT = process.env.PORT || 3000;
 app.use(express_1.default.json());
 //rutas declaradas
 app.use(taxi_routes_1.default, trajectories_routes_1.default);
@@ -27,9 +28,12 @@ app.use(taxi_routes_1.default, trajectories_routes_1.default);
 // //app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup))
 app.use(swagger_1.default);
-app.listen(PORT, () => {
-    console.log('SERVER IS UP ON PORT:', PORT);
-});
+//condicional con el node_env sea distinto
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        console.log('SERVER IS UP ON PORT:', PORT);
+    });
+}
 exports.default = app;
 // // app.get('/', async (req, res):Promise<void> => {
 // //   res.send({message: "taxis activos"}).status(200);
