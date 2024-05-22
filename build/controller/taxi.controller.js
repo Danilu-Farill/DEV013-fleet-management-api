@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePlate = exports.updatePlate = exports.createPlate = exports.getIdTaxis = exports.getAllPlate = void 0;
+exports.deletePlate = exports.updatePlate = exports.createPlate = exports.getEmail = exports.getIdTaxis = exports.getAllPlate = void 0;
 const client_1 = require("@prisma/client");
-// import prisma2 from '../connect';
+const mail_1 = require("../mail");
+const excel_1 = require("../excel");
 const prisma = new client_1.PrismaClient().taxis;
 const getAllPlate = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
@@ -27,6 +28,17 @@ const getAllPlate = (req, resp) => __awaiter(void 0, void 0, void 0, function* (
     catch (error) {
         resp.status(404).json("No encontrado");
     }
+    // try {
+    //   await transporter.sendMail({
+    //     from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
+    //     to: "kikadan08@gmail.com", // quien recibe
+    //     subject: "Hello ✔", // asunto
+    //     text: "Hello world 2?", // plain text body
+    //     html: "<b>Hello world???</b>", // html body
+    //   });
+    // } catch (error) {
+    //   console.log("🚀 ~ error:", error)
+    // }  
 });
 exports.getAllPlate = getAllPlate;
 const getIdTaxis = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
@@ -52,6 +64,40 @@ const getIdTaxis = (req, resp) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getIdTaxis = getIdTaxis;
+const getEmail = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
+    // try {
+    //   // const skip : number = parseInt(req.query.skip as string)??0;
+    //   // const take : number = parseInt(req.query.take as string)??10;
+    //   const findAllPlate = await prisma.findMany({
+    //     // skip: skip,
+    //     // take: take
+    //   });
+    //   resp.status(200).json(findAllPlate); 
+    // } catch (error) {
+    //   resp.status(404).json("No encontrado")
+    // }
+    try {
+        const { id, plate } = req.body;
+        const excel = (0, excel_1.createExcel)();
+        yield mail_1.transporter.sendMail({
+            from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
+            to: process.env.EMAIL_USER, // quien recibe
+            subject: "Hello ✔", // asunto
+            text: "Hello world 2?", // plain text body
+            html: "<b>Hello world???</b>", // html body
+            attachments: [{
+                    filename: `locations-${id}-${plate}.xlsx`,
+                    content: `${excel}`,
+                    contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }]
+        });
+        resp.send("email send");
+    }
+    catch (error) {
+        console.log("🚀 ~ error:", error);
+    }
+});
+exports.getEmail = getEmail;
 const createPlate = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id, plate } = req.body;

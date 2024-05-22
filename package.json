@@ -14,7 +14,8 @@
     "lint": "eslint . --ext .ts",
     "cli": "node cli.js",
     "clits": "node script/cliTaxis.js",
-    "tsc": "tsc script/cliTaxis.ts"
+    "tsc": "npx tsc --watch script/cliTaxis.ts",
+    "xlsc": "node build/excel.js"
   },
   "keywords": [
     "node",
@@ -53,6 +54,8 @@
     "superagent": "^8.1.2",
     "supertest": "^6.3.4",
     "swagger-autogen": "^2.23.7",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "xlsx": "^0.18.5",
+    "xlsx-populate": "^1.21.0"
   }
 }

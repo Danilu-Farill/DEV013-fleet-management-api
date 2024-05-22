@@ -3,7 +3,8 @@ node_modules
 .env
 build/*
 mail.ts
-
+script/*
+types/*
 
     # "test": "echo \"Error: no test specified\" && exit 1"
 

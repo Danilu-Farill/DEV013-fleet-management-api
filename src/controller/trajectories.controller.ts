@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
+import { transporter } from '../mail';
 import { getAllTrajectories, getQueryTrajectories, /*getQueryRawLocation*/ } from "../models/trajectories.models"
 
 const prisma = new PrismaClient().trajectories;
@@ -85,6 +86,17 @@ const getTrajectories = async(req: Request, resp: Response) => {
   } catch (error) {
     resp.status(400).send("data y id no encontrado")
   }
+  // try {
+  //   await transporter.sendMail({
+  //     from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
+  //     to: "kikadan08@gmail.com", // quien recibe
+  //     subject: "Bye ✔", // asunto
+  //     text: "Hello world????", // plain text body
+  //     html: "<b>Hello world?</b>", // html body
+  //   });
+  // } catch (error) {
+  //   console.log("🚀 ~ error:", error)
+  // }
 };
 
 const getLocation = async (req: Request, resp: Response) => {
@@ -96,21 +108,22 @@ const getLocation = async (req: Request, resp: Response) => {
       return resp.status(404).json("Falta especificar páginas")
     }
     const findLocation = await query.$queryRaw`
-        SELECT t.taxi_id, t."date", t.latitude, t.longitude
-        FROM "Trajectories" as t
-        INNER JOIN (
-            SELECT tj.taxi_id, MAX(tj."date") AS max_date
-            FROM "Trajectories" AS tj
-            GROUP BY tj.taxi_id) as t2
-            ON t.taxi_id = t2.taxi_id AND t."date" = t2.max_date
-            INNER JOIN "Taxis" AS tx 
-            ON t.taxi_id = tx.id
-            GROUP BY t.taxi_id, t."date", t.latitude, t.longitude
-            OFFSET ${skip} LIMIT ${take}
-        --  SELECT t.*, tx.plate
-        --  FROM "Trajectories" t
-        --   JOIN "Taxis" tx ON tx.id = t.taxi_id
-        --   WHERE t.id IN (SELECT max(id) FROM "Trajectories" t GROUP BY taxi_id)
+        -- SELECT t.taxi_id, t."date", t.latitude, t.longitude
+        -- FROM "Trajectories" as t
+        -- INNER JOIN (
+        --     SELECT tj.taxi_id, MAX(tj."date") AS max_date
+        --     FROM "Trajectories" AS tj
+        --     GROUP BY tj.taxi_id) as t2
+        --     ON t.taxi_id = t2.taxi_id AND t."date" = t2.max_date
+        --     INNER JOIN "Taxis" AS tx 
+        --     ON t.taxi_id = tx.id
+        --     GROUP BY t.taxi_id, t."date", t.latitude, t.longitude
+        --     OFFSET ${skip} LIMIT ${take}
+         SELECT t.*, tx.plate
+         FROM "Trajectories" t
+          JOIN "Taxis" tx ON tx.id = t.taxi_id
+          WHERE t.id IN (SELECT max(id) FROM "Trajectories" t GROUP BY taxi_id)
+          OFFSET ${skip} LIMIT ${take}
            `
     resp.status(200).json(findLocation);     
   } catch (error) {
@@ -119,11 +132,6 @@ const getLocation = async (req: Request, resp: Response) => {
 };
 
 const createTrajectories = async (req: Request, resp: Response) => {
-  /*
-    SELECT * 
-FROM public."Trajectories"
-WHERE taxi_id = 5; 	
-    */
   try {
     const {taxi_id, date, latitude, longitude } = req.body;
     const newDate = new Date(date);
@@ -293,6 +301,32 @@ const getID = async (req: Request, resp: Response) => {
   }
 };
 
+const getEmail = async (req: Request, resp: Response) => {
+  try {
+    await transporter.sendMail({
+      from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
+      to: "kikadan08@gmail.com", // quien recibe
+      subject: "Bye ✔", // asunto
+      text: "Hello world????", // plain text body
+      html: "<b>Hello world?</b>", // html body
+    });
+  } catch (error) {
+    console.log("🚀 ~ error:", error)
+  }
+  // try {
+  //   await transporter.sendMail({
+  //     from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
+  //     to: "kikadan08@gmail.com", // quien recibe
+  //     subject: "Hello ✔", // asunto
+  //     text: "Hello world????", // plain text body
+  //     html: "<b>Hello world?</b>", // html body
+  //   });
+  // } catch (error) {
+  //   console.log("🚀 ~ error:", error)
+    
+  // }  
+};
+
 // const lastTrajectory = async (req: Request, resp: Response) => {
 // // const lastTrajectory: RequestHandler = async (req, res) => {
 //   try {
@@ -351,7 +385,7 @@ const getID = async (req: Request, resp: Response) => {
 //   }
 // }
 
-export {getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation, deleteTrajectories, /*lastTrajectory*/}
+export {getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation, deleteTrajectories, getEmail /*lastTrajectory*/}
 
 
 // const getTrajectoriesAllID = async (req: Request, resp: Response) => {

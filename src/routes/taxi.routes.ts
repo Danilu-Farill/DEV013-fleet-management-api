@@ -1,6 +1,6 @@
 //import { Router } from "express";
 import express, { Router } from 'express';
-import { createPlate, deletePlate, getAllPlate, getIdTaxis, updatePlate } from "../controller/taxi.controller";
+import { createPlate, deletePlate, getAllPlate, getEmail, getIdTaxis, updatePlate } from "../controller/taxi.controller";
 
 //const taxiRouter = Router();
 const router: Router = express.Router();
@@ -208,6 +208,7 @@ const router: Router = express.Router();
 
 router.get('/taxis', getAllPlate);
 router.get('/taxis/:id', getIdTaxis);
+router.get("/taxis/ruta/email", getEmail)
 router.post('/taxis', createPlate);
 router.put('/taxis/:id', updatePlate);
 router.delete('/taxis/:id', deletePlate);

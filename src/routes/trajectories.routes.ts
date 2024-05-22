@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation, deleteTrajectories, /*lastTrajectory*/} from '../controller/trajectories.controller';
+import { getAll, getBody, createTrajectories, getID, getDate, getTrajectories, getLocation, deleteTrajectories, /*lastTrajectory*/getEmail} from '../controller/trajectories.controller';
 
 const routerTrajectories: Router = express.Router();
 
@@ -331,6 +331,7 @@ routerTrajectories.delete('/trajectories/:id', deleteTrajectories );
 routerTrajectories.get('/trajectoriesBody', getBody);//esta esta hecha con el body
 routerTrajectories.get('/trajectories/date/:date', getDate);//esta la voy hacer con date
 routerTrajectories.get('/trajectorieTaxi/:taxi_id', getID);//esta la voy hacer con id
+routerTrajectories.get("trajectories/trajectories/trajectories", getEmail)
 // routerTrajectories.get('/trajectories/lastTrajectory', lastTrajectory);//esta la voy hacer con prisma después
 // routerTrajectories.get('/trajectories/:taxi_id', getTrajectories);//esta la voy hacer con id y date
 

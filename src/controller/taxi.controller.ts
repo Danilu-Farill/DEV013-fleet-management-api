@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
-// import prisma2 from '../connect';
+import { transporter } from '../mail';
+import {createExcel} from '../excel';
 
 const prisma = new PrismaClient().taxis;
 
@@ -16,6 +17,17 @@ export const getAllPlate = async (req: Request, resp: Response) => {//: Promise<
   } catch (error) {
     resp.status(404).json("No encontrado")
   }
+  // try {
+  //   await transporter.sendMail({
+  //     from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
+  //     to: "kikadan08@gmail.com", // quien recibe
+  //     subject: "Hello ✔", // asunto
+  //     text: "Hello world 2?", // plain text body
+  //     html: "<b>Hello world???</b>", // html body
+  //   });
+  // } catch (error) {
+  //   console.log("🚀 ~ error:", error)
+  // }  
 };
 
 export const getIdTaxis = async (req: Request, resp: Response) => {
@@ -39,6 +51,39 @@ export const getIdTaxis = async (req: Request, resp: Response) => {
   } catch (error) {
     resp.status(404).json("Id no encontado")
   }
+}
+
+export const getEmail = async (req: Request, resp: Response) => {//: Promise<void>
+  // try {
+  //   // const skip : number = parseInt(req.query.skip as string)??0;
+  //   // const take : number = parseInt(req.query.take as string)??10;
+  //   const findAllPlate = await prisma.findMany({
+  //     // skip: skip,
+  //     // take: take
+  //   });
+  //   resp.status(200).json(findAllPlate); 
+  // } catch (error) {
+  //   resp.status(404).json("No encontrado")
+  // }
+  try {
+    const { id, plate } = req.body;
+    const excel = createExcel()
+    await transporter.sendMail({
+      from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
+      to: process.env.EMAIL_USER,// quien recibe
+      subject: "Hello ✔", // asunto
+      text: "Hello world 2?", // plain text body
+      html: "<b>Hello world???</b>", // html body
+      attachments: [{   
+        filename: `locations-${id}-${plate}.xlsx`,     
+        content: `${excel}`,
+        contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }]
+    });
+    resp.send("email send")
+  } catch (error) {
+    console.log("🚀 ~ error:", error)
+  }  
 }
 
 export const createPlate = async (req: Request, resp: Response) => {

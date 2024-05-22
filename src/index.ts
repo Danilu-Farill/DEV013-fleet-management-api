@@ -2,7 +2,6 @@ import express, { Application } from 'express';
 import router from './routes/taxi.routes';
 import routerTrajectories from './routes/trajectories.routes';
 import routerSwagger from "./swagger";
-
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerSetup from './swagger';
 

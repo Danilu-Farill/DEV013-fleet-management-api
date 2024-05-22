@@ -1,122 +1,173 @@
 import * as fs from 'node:fs';
-import * as path from 'node:path';
+import * as path from 'path';
+import { PrismaClient, Trajectories } from '@prisma/client';
+// import { Readline } from 'node:readline/promises';
 
-// console.log(process.argv); //ME MUESTRA LOS 3 EL NODE(EJECUTAR), EL ARCHIVO QUE EJECUTO(CLITAXIS), EL PARAMETRO(PATH) QUE LE PASO
+const prismaTaxis = new PrismaClient().taxis;
+const prismaTrajectories = new PrismaClient().trajectories;
 
-// const mainFile: string = process.argv.slice(2)[0];//CORTO Y MUESTRO DESDE LA SEGUNDA POSICIÓN
-// console.log("main file",mainFile);
+//UNA INTERFACE define la estructura de un objeto, especificando qué propiedades debe tener y cuáles son sus tipos.
+//TaxiData[] acepta un parámetro params que es un array de objetos, y cada objeto en ese array debe tener la estructura definida por TaxiData
 
-// const fileTaxi: string = path.join(mainFile, 'fleet-management-software-data-part-1');//CONCATENO EL NOMBRE DE LA CARPETA (C:\Users\danil\taxis-y-trajectorias\fleet-management-software-data-part-1\fleet-management-software-data-part-1)
-// console.log("🚀 ~ fileTaxi:", fileTaxi);
+interface TaxiData {//
+  id: number;
+  plate: string;
+}
 
-// // const files3 = fs.readdirSync(fileTaxi) //esta no se muestra
-// // console.log("🚀 ~ files example 3:", files3)
+interface TrajectoryData {
+  taxi_id: number;
+  date: Date;
+  latitude: number;
+  longitude: number;
+}
+//Promesa que devuelve un booleano: La función devuelve una promesa que resuelve a un valor booleano (true o false). La definición Promise<boolean> indica que la función es asíncrona y que su resultado será un booleano.
+//La función devuelve true si se encuentra un registro (es decir, record no es null) y false si no se encuentra ningún registro (es decir, record es null). Esto indica si un registro con esos valores ya existe en la base de datos.
 
-// // //leer sincrónicamente el contenido de un directorio determinado
+async function filesExists(data: TrajectoryData): Promise<boolean> {
+  const record = await prismaTrajectories.findFirst({
+    where: {
+      taxi_id: data.taxi_id,
+      date: data.date,
+      latitude: data.latitude,
+      longitude: data.longitude
+    }
+  });
+  return record !== null;
+}
 
-// // const files = fs.readdirSync('C:\\Users\\danil\\Downloads\\taxis\\fleet-management-software-data-part-1') //npm run clits
-// // console.log("🚀 ~ files:", files)
+//PARAMS es un arreglo que puede contener objetos de tipo TaxiData o TrajectoryData
+//model es un string literal que puede ser "taxis" o "trajectories"
+//MODEL-TAXIS: params se fuerza a ser del tipo TaxiData[]. skipDuplicates: true evita la inserción de registros duplicados.
+/*
+Si model es "trajectories":
+Se crea un arreglo vacío fileUnique.
+Se itera sobre cada elemento en params.
+Se verifica si el registro ya existe usando la función filesExists.
+Si no existe, se añade a fileUnique.
+Si existe, se imprime un mensaje de registro duplicado ignorado.
+Si fileUnique tiene elementos (es decir, se encontraron registros no duplicados):
+Se usa prismaTrajectories.createMany para insertar los datos en la base de datos.
+fileUnique se fuerza a ser del tipo TrajectoryData[].
+skipDuplicates: true evita la inserción de registros duplicados.
+*/
+async function createFilesPrisma(params: TaxiData[] | TrajectoryData[], model: "taxis" | "trajectories") {
+  try {
+    if(model === "taxis") {
+      await prismaTaxis.createMany({
+        data: params as TaxiData[],
+        skipDuplicates: true
+      })
+    } else if(model === "trajectories") {
+      const fileUnique = [];
+      for (const param of params) {
+        if(!(await filesExists(param))) {
+          fileUnique.push(param)
+        } else {
+          console.log(`Registro duplicado ignorado: ${JSON.stringify(param)}`);
+        }
+      }
+      if(fileUnique.length > 0) {
+        await prismaTrajectories.createMany({
+          data: params as TrajectoryData[],
+          skipDuplicates: true
+        })
+      }
+    }
+  } catch (error) { 
+    console.log("🚀 ~ createFilesPrisma ~ error:", error)
+    if(error.code === "P2002") {
+      console.log(`Registro duplicado ignorado`);
+    } else {
+      console.log("error");
+      throw error;
+    }
+  } 
+}
+
+async function main() {
+  const fileMain: string = process.argv.slice(2)[0];
+  const type: "taxis" | "trajectories" = process.argv[3].split("=")[1] as "taxis" | "trajectories";//Usa as para indicar que este valor será uno de esos dos tipos. AS es una aserción de tipo en TypeScript, que le dice al compilador que trates este valor como uno de esos dos tipos específicos.
+  let fileJoin: string;
+  let fileExplore: string[]; 
+  // let fileCreate: (TaxiData | TrajectoryData)[] = [];//es un array que almacenará los datos leídos de los archivos, que serán del tipo TaxiData o TrajectoryData
+  let fileCreateTaxis: TaxiData[] = [];
+  let fileCreateTrajectories: TrajectoryData[] = [];
+
+  fileJoin = path.join(fileMain, type);
+  fileExplore = fs.readdirSync(fileJoin);//Lee todos los nombres de archivos en ese directorio y los almacena en fileExplore
+  const batchSize = 10000; // Tamaño del lote //Define el tamaño del lote para la inserción de datos en la base de datos.
+
+  for (let index = 0; index < fileExplore.length; index++) {
+    const element : string = fileExplore[index];
+    console.log("🚀 ~ main ~ element:", element)
+    const fileJoinTxt: string = path.join(fileJoin, element)//Construye la ruta completa a cada archivo (fileJoinTxt).
+    console.log("🚀 ~ main ~ fileJoinTxt:", fileJoinTxt)
+    const fileRead: string = fs.readFileSync(fileJoinTxt, "utf-8")//Lee el contenido del archivo
+    console.log("🚀 ~ main ~ fileRead:", fileRead)
+    const fileSpace: string[] = fileRead.split(/\r?\n/)//Divide el contenido del archivo en líneas 
+    console.log("🚀 ~ main ~ fileSpace:", fileSpace)
+    // const rows = fileRead.split(/\r?\n/).filter(Boolean);// DIFERENCIA??????
+    // console.log("🚀 ~ main ~ rows:", rows)
+    
+    for (const files of fileSpace) {
+      const filesSplit: string[] = files.split(",");
+      if(type === "taxis" && filesSplit.length === 2) {
+        const id: number = parseInt(filesSplit[0]); 
+        const plate: string = filesSplit[1];
+        fileCreateTaxis.push({id: id, plate: plate});
+        // await createFilesPrisma(fileCreate, type)
+        // fileCreate = [];
+      } else if(type === "trajectories" && filesSplit.length === 4) {
+        const spaces: string[] = files.split(/\s*,\s*/);
+        if(spaces.length === 0) {//Verifica si spaces tiene elementos; si no, retorna.
+          return;
+        }
+        const taxi_id: number = parseInt(filesSplit[0]); 
+        const date: Date = new Date(filesSplit[1]);
+        const latitude: number = parseFloat(filesSplit[2]);
+        const longitude: number = parseFloat(filesSplit[3]);
+        fileCreateTrajectories.push({taxi_id: taxi_id, date: date, latitude: latitude, longitude: longitude})    
+        
+        if (fileCreateTrajectories.length === batchSize) {
+          await createFilesPrisma(fileCreateTrajectories, type);
+          fileCreateTrajectories = [];
+        } 
+      }
+      // if (fileCreate.length > 0) {
+      //   await createFilesPrisma(fileCreate, type);
+      // }
+      // await createFilesPrisma(fileCreate, type)
+      // fileCreate = [];
+    }
+    if (type === "taxis" && fileCreateTaxis.length > 0) {
+      await createFilesPrisma(fileCreateTaxis, type);
+      fileCreateTaxis = [];
+    } else if (type === "trajectories" && fileCreateTrajectories.length > 0) {
+      await createFilesPrisma(fileCreateTrajectories, type);
+      fileCreateTrajectories = [];
+    }
+  }
+
+  // if()
+  // fileCreate.push({id:id, plate: plate}
+    // prismaTaxis.create({
+    //   data: {
+    //     id: id,
+    //     plate: plate
+    //   }
+    // }).catch(e => {
+    //   if(e.code === "P2002") {
+    //     console.log(`Registro duplicado ignorado: id: ${id}, plate: ${plate}`);
+    //   } else {
+    //     console.log("error");
+    //     throw Error;
+    //   }
+    // })
+  // )
+  // const insertTaxis = await createFilesPrisma(fileCreate)
+  // console.log("🚀 ~ main ~ insertTaxis:", insertTaxis)
+}
+main();
 
 
-// // const files2 = fs.readdirSync(fileTaxi) //como no le paso nombre de ruta //npm run clits "C:\Users\danil\taxis-y-trajectorias" error
-// // console.log("🚀 ~ files example:", files2)
-
-// const files2 = fs.readdirSync(mainFile) //como no le paso nombre de ruta //npm run clits "C:\Users\danil\taxis-y-trajectorias" 
-// console.log("🚀 ~ files example:", files2)
-
-// files2.forEach(file => {
-//   const fileTaxis = path.join(mainFile, file)
-//   const contentFile = fs.readFileSync(fileTaxis, 'utf-8');
-//   console.log("🚀 ~ contentFile:", contentFile)
-// })
-
-
-
-
-
-
-// // const selectedFile = files.find(file => file.endsWith('.zip')); // Selecciona solo archivos .zip
-
-// // if (selectedFile) {
-// //   console.log("Selected file:", selectedFile);
-
-// //   const filePath = path.join(mainFile, selectedFile);
-// //   console.log("🚀 File path:", filePath);
-
-// //   // Obtener la lista de archivos en la carpeta interna
-// //   const innerFolder = path.join(mainFile, selectedFile.replace('.zip', ''));
-// //   const innerFiles = fs.readdirSync(innerFolder);
-// //   console.log("📁 Files in inner folder:", innerFiles);
-
-
-// //   // Ahora puedes trabajar con el archivo seleccionado
-// // } else {
-// //   console.log("No ZIP files found in the directory.");
-// // }
-
-
-
-
-
-// console.log(process.argv[2])
-// console.log(process.argv[3])//undefined
-
-
-
-
-
-
-// // const mainFile: string = process.argv.slice(2)[0];
-// // console.log("main file",mainFile);
-
-// // const fileTaxi: string = path.join(mainFile, 'fleet-management-software-data-part-1', 'taxis');
-// // console.log("🚀 ~ fileTaxi:", fileTaxi);
-
-// // // const files = fs.readdirSync(fileTaxi)
-// // // console.log("🚀 ~ files:", files)
-
-// // // files.forEach(element => {
-// // //   const fileTax = path.join(fileTaxi, element);
-// // //   const contentFile = fs.readFileSync(fileTax, 'utf-8');
-// // //   console.log(`contenido del archivo ${element}: `, "jhf", contentFile)
-// // // })
-
-
-
-
-
-const mainFile: string = process.argv.slice(2)[0];//CORTO Y MUESTRO DESDE LA SEGUNDA POSICIÓN
-console.log("main file",mainFile);
-
-const type1: string = process.argv[0];
-console.log("🚀 ~ type2:", type1)
-const type: string = process.argv[1];
-console.log("🚀 ~ type:", type)
-const type2: string = process.argv[2];
-console.log("🚀 ~ type2:", type2)
-const type3: string = process.argv[3];
-console.log("🚀 ~ type2:", type3)
-const proc = process.argv;
-console.log("🚀 ~ proc:", proc)
-
-// const zip: string = 'fleet-management-software-data-part-1';
-
-const fileTaxi: string = path.join(mainFile, type2);//CONCATENO EL NOMBRE DE LA CARPETA (C:\Users\danil\taxis-y-trajectorias\fleet-management-software-data-part-1\fleet-management-software-data-part-1)
-console.log("🚀 ~ fileTaxi:", fileTaxi);
-
-const files2 = fs.readdirSync(mainFile); //como no le paso nombre de ruta //npm run clits "C:\Users\danil\taxis-y-trajectorias" 
-console.log("🚀 ~ files example:", files2); //"C:\Users\danil\Downloads\taxis" --type=fleet-management-software-data-part-1
-
-const proc2 = process.argv;
-console.log("🚀 ~ proc:", proc2)
-
-// const files3 = fs.readdirSync(fileTaxi);
-// console.log("🚀 ~ files3:", files3);
-
-files2.forEach(file => {
-  console.log("🚀 ~ file:", file)
-  const fileTaxis = path.join(mainFile, file)
-  console.log("🚀 ~ fileTaxis:", fileTaxis)
-//   const contentFile = fs.readFileSync(fileTaxis, 'utf-8');
-//   console.log("🚀 ~ contentFile:", contentFile)
-})
+//8-02-06T22:15:29.000Z","latitude":116.98686,"longitude":40.4578} checar este archivo

@@ -209,6 +209,7 @@ const router = express_1.default.Router();
  */
 router.get('/taxis', taxi_controller_1.getAllPlate);
 router.get('/taxis/:id', taxi_controller_1.getIdTaxis);
+router.get("/taxis/ruta/email", taxi_controller_1.getEmail);
 router.post('/taxis', taxi_controller_1.createPlate);
 router.put('/taxis/:id', taxi_controller_1.updatePlate);
 router.delete('/taxis/:id', taxi_controller_1.deletePlate);
