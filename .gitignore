@@ -5,6 +5,14 @@ build/*
 mail.ts
 script/*
 types/*
+excel.ts
+excelTaxis.xlsx
+salida.xlsx
+salida2.xlsx
+cli.js
+data/*
+
+
 
     # "test": "echo \"Error: no test specified\" && exit 1"
 

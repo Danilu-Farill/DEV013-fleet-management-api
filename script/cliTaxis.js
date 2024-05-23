@@ -81,36 +81,36 @@ skipDuplicates: true evita la inserción de registros duplicados.
 */
 function createFilesPrisma(params, model) {
     return __awaiter(this, void 0, void 0, function () {
-        var fileUnique, _i, params_1, param, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var fileUnique, _i, _a, param, error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    _a.trys.push([0, 9, , 10]);
+                    _b.trys.push([0, 9, , 10]);
                     if (!(model === "taxis")) return [3 /*break*/, 2];
                     return [4 /*yield*/, prismaTaxis.createMany({
                             data: params,
                             skipDuplicates: true
                         })];
                 case 1:
-                    _a.sent();
+                    _b.sent();
                     return [3 /*break*/, 8];
                 case 2:
                     if (!(model === "trajectories")) return [3 /*break*/, 8];
                     fileUnique = [];
-                    _i = 0, params_1 = params;
-                    _a.label = 3;
+                    _i = 0, _a = params;
+                    _b.label = 3;
                 case 3:
-                    if (!(_i < params_1.length)) return [3 /*break*/, 6];
-                    param = params_1[_i];
+                    if (!(_i < _a.length)) return [3 /*break*/, 6];
+                    param = _a[_i];
                     return [4 /*yield*/, filesExists(param)];
                 case 4:
-                    if (!(_a.sent())) {
+                    if (!(_b.sent())) {
                         fileUnique.push(param);
                     }
                     else {
                         console.log("Registro duplicado ignorado: ".concat(JSON.stringify(param)));
                     }
-                    _a.label = 5;
+                    _b.label = 5;
                 case 5:
                     _i++;
                     return [3 /*break*/, 3];
@@ -121,11 +121,11 @@ function createFilesPrisma(params, model) {
                             skipDuplicates: true
                         })];
                 case 7:
-                    _a.sent();
-                    _a.label = 8;
+                    _b.sent();
+                    _b.label = 8;
                 case 8: return [3 /*break*/, 10];
                 case 9:
-                    error_1 = _a.sent();
+                    error_1 = _b.sent();
                     console.log("🚀 ~ createFilesPrisma ~ error:", error_1);
                     if (error_1.code === "P2002") {
                         console.log("Registro duplicado ignorado");
@@ -142,7 +142,7 @@ function createFilesPrisma(params, model) {
 }
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var fileMain, type, fileJoin, fileExplore, fileCreateTaxis, fileCreateTrajectories, batchSize, index, element, fileJoinTxt, fileRead, fileSpace, _i, fileSpace_1, files, filesSplit, id, plate, spaces, taxi_id, date, latitude, longitude;
+        var fileMain, type, fileJoin, fileExplore, fileCreateTaxis, fileCreateTrajectories, batchSize, index, element, fileJoinTxt, fileRead, fileSpace, _i, fileSpace_1, files, filesSplit, id, plate, spaces, dateString, taxi_id, date, latitude, longitude;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -185,8 +185,11 @@ function main() {
                     if (spaces.length === 0) { //Verifica si spaces tiene elementos; si no, retorna.
                         return [2 /*return*/];
                     }
+                    dateString = filesSplit[1].replace(" ", "T");
+                    console.log("🚀 ~ main ~ dateString:", dateString);
                     taxi_id = parseInt(filesSplit[0]);
-                    date = new Date(filesSplit[1]);
+                    date = new Date(dateString);
+                    console.log("🚀 ~ main ~ date:", date);
                     latitude = parseFloat(filesSplit[2]);
                     longitude = parseFloat(filesSplit[3]);
                     fileCreateTrajectories.push({ taxi_id: taxi_id, date: date, latitude: latitude, longitude: longitude });

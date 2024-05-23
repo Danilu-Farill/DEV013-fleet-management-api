@@ -114,5 +114,5 @@ export async function createExcel(/*data:TaxisData[]*/) {
   workbook.toFileAsync("./excelTaxis.xlsx")
 }
 
-// createExcel();
+createExcel();
 

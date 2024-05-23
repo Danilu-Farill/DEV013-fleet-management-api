@@ -78,8 +78,8 @@ const getEmail = (req, resp) => __awaiter(void 0, void 0, void 0, function* () {
     // }
     try {
         const { id, plate } = req.body;
-        const excel = (0, excel_1.createExcel)();
-        yield mail_1.transporter.sendMail({
+        const excel = yield (0, excel_1.createExcel)();
+        mail_1.transporter.sendMail({
             from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
             to: process.env.EMAIL_USER, // quien recibe
             subject: "Hello ✔", // asunto

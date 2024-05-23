@@ -67,8 +67,8 @@ export const getEmail = async (req: Request, resp: Response) => {//: Promise<voi
   // }
   try {
     const { id, plate } = req.body;
-    const excel = createExcel()
-    await transporter.sendMail({
+    const excel = await createExcel()
+    transporter.sendMail({
       from: `email Dani 👻 ${process.env.EMAIL}`, // correo que manda, el que puse en mail.ts
       to: process.env.EMAIL_USER,// quien recibe
       subject: "Hello ✔", // asunto

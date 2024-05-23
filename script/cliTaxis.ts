@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'path';
-import { PrismaClient, Trajectories } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 // import { Readline } from 'node:readline/promises';
 
 const prismaTaxis = new PrismaClient().taxis;
@@ -58,8 +58,8 @@ async function createFilesPrisma(params: TaxiData[] | TrajectoryData[], model: "
         skipDuplicates: true
       })
     } else if(model === "trajectories") {
-      const fileUnique = [];
-      for (const param of params) {
+      const fileUnique: TrajectoryData[] = [];
+      for (const param of params as TrajectoryData[]) {
         if(!(await filesExists(param))) {
           fileUnique.push(param)
         } else {
@@ -122,8 +122,11 @@ async function main() {
         if(spaces.length === 0) {//Verifica si spaces tiene elementos; si no, retorna.
           return;
         }
+        const dateString = filesSplit[1].replace(" ", "T");
+        console.log("🚀 ~ main ~ dateString:", dateString)
         const taxi_id: number = parseInt(filesSplit[0]); 
-        const date: Date = new Date(filesSplit[1]);
+        const date: Date = new Date(dateString);
+        console.log("🚀 ~ main ~ date:", date)
         const latitude: number = parseFloat(filesSplit[2]);
         const longitude: number = parseFloat(filesSplit[3]);
         fileCreateTrajectories.push({taxi_id: taxi_id, date: date, latitude: latitude, longitude: longitude})    
