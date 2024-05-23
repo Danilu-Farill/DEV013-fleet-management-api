@@ -39,11 +39,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("node:fs");
 var path = require("path");
 var client_1 = require("@prisma/client");
-// import { Readline } from 'node:readline/promises';
 var prismaTaxis = new client_1.PrismaClient().taxis;
 var prismaTrajectories = new client_1.PrismaClient().trajectories;
-//Promesa que devuelve un booleano: La función devuelve una promesa que resuelve a un valor booleano (true o false). La definición Promise<boolean> indica que la función es asíncrona y que su resultado será un booleano.
-//La función devuelve true si se encuentra un registro (es decir, record no es null) y false si no se encuentra ningún registro (es decir, record es null). Esto indica si un registro con esos valores ya existe en la base de datos.
+;
+;
 function filesExists(data) {
     return __awaiter(this, void 0, void 0, function () {
         var record;
@@ -64,21 +63,7 @@ function filesExists(data) {
         });
     });
 }
-//PARAMS es un arreglo que puede contener objetos de tipo TaxiData o TrajectoryData
-//model es un string literal que puede ser "taxis" o "trajectories"
-//MODEL-TAXIS: params se fuerza a ser del tipo TaxiData[]. skipDuplicates: true evita la inserción de registros duplicados.
-/*
-Si model es "trajectories":
-Se crea un arreglo vacío fileUnique.
-Se itera sobre cada elemento en params.
-Se verifica si el registro ya existe usando la función filesExists.
-Si no existe, se añade a fileUnique.
-Si existe, se imprime un mensaje de registro duplicado ignorado.
-Si fileUnique tiene elementos (es decir, se encontraron registros no duplicados):
-Se usa prismaTrajectories.createMany para insertar los datos en la base de datos.
-fileUnique se fuerza a ser del tipo TrajectoryData[].
-skipDuplicates: true evita la inserción de registros duplicados.
-*/
+;
 function createFilesPrisma(params, model) {
     return __awaiter(this, void 0, void 0, function () {
         var fileUnique, _i, _a, param, error_1;
@@ -151,23 +136,16 @@ function main() {
                     fileCreateTaxis = [];
                     fileCreateTrajectories = [];
                     fileJoin = path.join(fileMain, type);
-                    fileExplore = fs.readdirSync(fileJoin); //Lee todos los nombres de archivos en ese directorio y los almacena en fileExplore
+                    fileExplore = fs.readdirSync(fileJoin);
                     batchSize = 10000;
                     index = 0;
                     _a.label = 1;
                 case 1:
                     if (!(index < fileExplore.length)) return [3 /*break*/, 11];
                     element = fileExplore[index];
-                    console.log("🚀 ~ main ~ element:", element);
-                    fileJoinTxt = path.join(fileJoin, element) //Construye la ruta completa a cada archivo (fileJoinTxt).
-                    ;
-                    console.log("🚀 ~ main ~ fileJoinTxt:", fileJoinTxt);
-                    fileRead = fs.readFileSync(fileJoinTxt, "utf-8") //Lee el contenido del archivo
-                    ;
-                    console.log("🚀 ~ main ~ fileRead:", fileRead);
-                    fileSpace = fileRead.split(/\r?\n/) //Divide el contenido del archivo en líneas 
-                    ;
-                    console.log("🚀 ~ main ~ fileSpace:", fileSpace);
+                    fileJoinTxt = path.join(fileJoin, element);
+                    fileRead = fs.readFileSync(fileJoinTxt, "utf-8");
+                    fileSpace = fileRead.split(/\r?\n/);
                     _i = 0, fileSpace_1 = fileSpace;
                     _a.label = 2;
                 case 2:
@@ -182,14 +160,12 @@ function main() {
                 case 3:
                     if (!(type === "trajectories" && filesSplit.length === 4)) return [3 /*break*/, 5];
                     spaces = files.split(/\s*,\s*/);
-                    if (spaces.length === 0) { //Verifica si spaces tiene elementos; si no, retorna.
+                    if (spaces.length === 0) {
                         return [2 /*return*/];
                     }
                     dateString = filesSplit[1].replace(" ", "T");
-                    console.log("🚀 ~ main ~ dateString:", dateString);
                     taxi_id = parseInt(filesSplit[0]);
                     date = new Date(dateString);
-                    console.log("🚀 ~ main ~ date:", date);
                     latitude = parseFloat(filesSplit[2]);
                     longitude = parseFloat(filesSplit[3]);
                     fileCreateTrajectories.push({ taxi_id: taxi_id, date: date, latitude: latitude, longitude: longitude });
@@ -225,4 +201,3 @@ function main() {
     });
 }
 main();
-//8-02-06T22:15:29.000Z","latitude":116.98686,"longitude":40.4578} checar este archivo

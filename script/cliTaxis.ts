@@ -1,27 +1,21 @@
 import * as fs from 'node:fs';
 import * as path from 'path';
 import { PrismaClient } from '@prisma/client';
-// import { Readline } from 'node:readline/promises';
 
 const prismaTaxis = new PrismaClient().taxis;
 const prismaTrajectories = new PrismaClient().trajectories;
 
-//UNA INTERFACE define la estructura de un objeto, especificando qué propiedades debe tener y cuáles son sus tipos.
-//TaxiData[] acepta un parámetro params que es un array de objetos, y cada objeto en ese array debe tener la estructura definida por TaxiData
-
-interface TaxiData {//
+interface TaxiData {
   id: number;
   plate: string;
-}
+};
 
 interface TrajectoryData {
   taxi_id: number;
   date: Date;
   latitude: number;
   longitude: number;
-}
-//Promesa que devuelve un booleano: La función devuelve una promesa que resuelve a un valor booleano (true o false). La definición Promise<boolean> indica que la función es asíncrona y que su resultado será un booleano.
-//La función devuelve true si se encuentra un registro (es decir, record no es null) y false si no se encuentra ningún registro (es decir, record es null). Esto indica si un registro con esos valores ya existe en la base de datos.
+};
 
 async function filesExists(data: TrajectoryData): Promise<boolean> {
   const record = await prismaTrajectories.findFirst({
@@ -33,23 +27,8 @@ async function filesExists(data: TrajectoryData): Promise<boolean> {
     }
   });
   return record !== null;
-}
+};
 
-//PARAMS es un arreglo que puede contener objetos de tipo TaxiData o TrajectoryData
-//model es un string literal que puede ser "taxis" o "trajectories"
-//MODEL-TAXIS: params se fuerza a ser del tipo TaxiData[]. skipDuplicates: true evita la inserción de registros duplicados.
-/*
-Si model es "trajectories":
-Se crea un arreglo vacío fileUnique.
-Se itera sobre cada elemento en params.
-Se verifica si el registro ya existe usando la función filesExists.
-Si no existe, se añade a fileUnique.
-Si existe, se imprime un mensaje de registro duplicado ignorado.
-Si fileUnique tiene elementos (es decir, se encontraron registros no duplicados):
-Se usa prismaTrajectories.createMany para insertar los datos en la base de datos.
-fileUnique se fuerza a ser del tipo TrajectoryData[].
-skipDuplicates: true evita la inserción de registros duplicados.
-*/
 async function createFilesPrisma(params: TaxiData[] | TrajectoryData[], model: "taxis" | "trajectories") {
   try {
     if(model === "taxis") {
@@ -61,7 +40,7 @@ async function createFilesPrisma(params: TaxiData[] | TrajectoryData[], model: "
       const fileUnique: TrajectoryData[] = [];
       for (const param of params as TrajectoryData[]) {
         if(!(await filesExists(param))) {
-          fileUnique.push(param)
+          fileUnique.push(param);
         } else {
           console.log(`Registro duplicado ignorado: ${JSON.stringify(param)}`);
         }
@@ -74,7 +53,7 @@ async function createFilesPrisma(params: TaxiData[] | TrajectoryData[], model: "
       }
     }
   } catch (error) { 
-    console.log("🚀 ~ createFilesPrisma ~ error:", error)
+    console.log("🚀 ~ createFilesPrisma ~ error:", error);
     if(error.code === "P2002") {
       console.log(`Registro duplicado ignorado`);
     } else {
@@ -86,28 +65,21 @@ async function createFilesPrisma(params: TaxiData[] | TrajectoryData[], model: "
 
 async function main() {
   const fileMain: string = process.argv.slice(2)[0];
-  const type: "taxis" | "trajectories" = process.argv[3].split("=")[1] as "taxis" | "trajectories";//Usa as para indicar que este valor será uno de esos dos tipos. AS es una aserción de tipo en TypeScript, que le dice al compilador que trates este valor como uno de esos dos tipos específicos.
+  const type: "taxis" | "trajectories" = process.argv[3].split("=")[1] as "taxis" | "trajectories";
   let fileJoin: string;
   let fileExplore: string[]; 
-  // let fileCreate: (TaxiData | TrajectoryData)[] = [];//es un array que almacenará los datos leídos de los archivos, que serán del tipo TaxiData o TrajectoryData
   let fileCreateTaxis: TaxiData[] = [];
   let fileCreateTrajectories: TrajectoryData[] = [];
 
   fileJoin = path.join(fileMain, type);
-  fileExplore = fs.readdirSync(fileJoin);//Lee todos los nombres de archivos en ese directorio y los almacena en fileExplore
-  const batchSize = 10000; // Tamaño del lote //Define el tamaño del lote para la inserción de datos en la base de datos.
+  fileExplore = fs.readdirSync(fileJoin);
+  const batchSize = 10000;
 
   for (let index = 0; index < fileExplore.length; index++) {
     const element : string = fileExplore[index];
-    console.log("🚀 ~ main ~ element:", element)
-    const fileJoinTxt: string = path.join(fileJoin, element)//Construye la ruta completa a cada archivo (fileJoinTxt).
-    console.log("🚀 ~ main ~ fileJoinTxt:", fileJoinTxt)
-    const fileRead: string = fs.readFileSync(fileJoinTxt, "utf-8")//Lee el contenido del archivo
-    console.log("🚀 ~ main ~ fileRead:", fileRead)
-    const fileSpace: string[] = fileRead.split(/\r?\n/)//Divide el contenido del archivo en líneas 
-    console.log("🚀 ~ main ~ fileSpace:", fileSpace)
-    // const rows = fileRead.split(/\r?\n/).filter(Boolean);// DIFERENCIA??????
-    // console.log("🚀 ~ main ~ rows:", rows)
+    const fileJoinTxt: string = path.join(fileJoin, element);
+    const fileRead: string = fs.readFileSync(fileJoinTxt, "utf-8");
+    const fileSpace: string[] = fileRead.split(/\r?\n/);
     
     for (const files of fileSpace) {
       const filesSplit: string[] = files.split(",");
@@ -115,32 +87,23 @@ async function main() {
         const id: number = parseInt(filesSplit[0]); 
         const plate: string = filesSplit[1];
         fileCreateTaxis.push({id: id, plate: plate});
-        // await createFilesPrisma(fileCreate, type)
-        // fileCreate = [];
       } else if(type === "trajectories" && filesSplit.length === 4) {
         const spaces: string[] = files.split(/\s*,\s*/);
-        if(spaces.length === 0) {//Verifica si spaces tiene elementos; si no, retorna.
+        if(spaces.length === 0) {
           return;
         }
         const dateString = filesSplit[1].replace(" ", "T");
-        console.log("🚀 ~ main ~ dateString:", dateString)
         const taxi_id: number = parseInt(filesSplit[0]); 
         const date: Date = new Date(dateString);
-        console.log("🚀 ~ main ~ date:", date)
         const latitude: number = parseFloat(filesSplit[2]);
         const longitude: number = parseFloat(filesSplit[3]);
-        fileCreateTrajectories.push({taxi_id: taxi_id, date: date, latitude: latitude, longitude: longitude})    
+        fileCreateTrajectories.push({taxi_id: taxi_id, date: date, latitude: latitude, longitude: longitude}); 
         
         if (fileCreateTrajectories.length === batchSize) {
           await createFilesPrisma(fileCreateTrajectories, type);
           fileCreateTrajectories = [];
         } 
       }
-      // if (fileCreate.length > 0) {
-      //   await createFilesPrisma(fileCreate, type);
-      // }
-      // await createFilesPrisma(fileCreate, type)
-      // fileCreate = [];
     }
     if (type === "taxis" && fileCreateTaxis.length > 0) {
       await createFilesPrisma(fileCreateTaxis, type);
@@ -150,27 +113,5 @@ async function main() {
       fileCreateTrajectories = [];
     }
   }
-
-  // if()
-  // fileCreate.push({id:id, plate: plate}
-    // prismaTaxis.create({
-    //   data: {
-    //     id: id,
-    //     plate: plate
-    //   }
-    // }).catch(e => {
-    //   if(e.code === "P2002") {
-    //     console.log(`Registro duplicado ignorado: id: ${id}, plate: ${plate}`);
-    //   } else {
-    //     console.log("error");
-    //     throw Error;
-    //   }
-    // })
-  // )
-  // const insertTaxis = await createFilesPrisma(fileCreate)
-  // console.log("🚀 ~ main ~ insertTaxis:", insertTaxis)
 }
 main();
-
-
-//8-02-06T22:15:29.000Z","latitude":116.98686,"longitude":40.4578} checar este archivo

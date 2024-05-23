@@ -10,21 +10,6 @@ const taxisIdError = "/taxis/diez";
 describe('API REST TAXIS', () => {
   describe('GET', () => {
     it('Debería devolver el tipo de plate y id ', async () => {
-    // const expectCode = 200;
-    // console.log(response.header, "response");
-    // console.log(response.statusCode, "response");
-    // console.log(response.status, "response");
-    // console.log(response.body, "response");
-    // console.log(response.error, "response");
-    // console.log(response.links, "response");//{}
-    // console.log(response.clientError, "response");//false
-    // console.log(response.ok, "response");//true
-    // console.log(response.body.query, "response");//undefined
-    // console.log(response.body.findAllPlate[8].plate, "response2");// GHGH-1458
-    // console.log(typeof response.body.findAllPlate[8].plate, "response2");// string
-    // console.log(typeof response.body.findAllPlate[0].id, "response4");//number
-    // console.log(response.body[0], "response");// { id: 7249, plate: 'CNCJ-2997' }
-      // console.log(response.body, "response");// { id: 7249, plate: 'CNCJ-2997' }
       const response = await request(app).get(taxis).send();
       expect(typeof response.body[0].plate).toBe("string");
       expect(typeof response.body[0].id).toBe("number");

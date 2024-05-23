@@ -322,18 +322,15 @@ const routerTrajectories: Router = express.Router();
 
 
 routerTrajectories.get('/trajectories', getAll);
-routerTrajectories.get('/trajectories/id', getTrajectories);//esta la voy hacer con id y date
-routerTrajectories.get('/trajectories/location', getLocation);//esta la voy hacer con longitud y latitud
+routerTrajectories.get('/trajectories/id', getTrajectories);
+routerTrajectories.get('/trajectories/location', getLocation);
 routerTrajectories.post('/trajectories', createTrajectories);
 routerTrajectories.delete('/trajectories/:id', deleteTrajectories );
-// routerTrajectories.put('/trajectories/:id', );
 
-routerTrajectories.get('/trajectoriesBody', getBody);//esta esta hecha con el body
-routerTrajectories.get('/trajectories/date/:date', getDate);//esta la voy hacer con date
-routerTrajectories.get('/trajectorieTaxi/:taxi_id', getID);//esta la voy hacer con id
+routerTrajectories.get('/trajectoriesBody', getBody);
+routerTrajectories.get('/trajectories/date/:date', getDate);
+routerTrajectories.get('/trajectorieTaxi/:taxi_id', getID);
 routerTrajectories.get("trajectories/trajectories/trajectories", getEmail)
-// routerTrajectories.get('/trajectories/lastTrajectory', lastTrajectory);//esta la voy hacer con prisma después
-// routerTrajectories.get('/trajectories/:taxi_id', getTrajectories);//esta la voy hacer con id y date
 
 export default routerTrajectories;
 
