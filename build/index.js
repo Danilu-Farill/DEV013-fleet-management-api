@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
+const express_1 = __importDefault(require("express")); //Se importa express y Application de la librería express. Application es un tipo de TypeScript que se usa para tipar la constante app.
 const taxi_routes_1 = __importDefault(require("./routes/taxi.routes"));
 const trajectories_routes_1 = __importDefault(require("./routes/trajectories.routes"));
 const swagger_1 = __importDefault(require("./swagger"));
@@ -17,11 +17,13 @@ const swagger_1 = __importDefault(require("./swagger"));
 // import swaggerUi from "swagger-ui-express";
 // import swaggerOutput from "./swagger";
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
-const app = (0, express_1.default)();
+const app = (0, express_1.default)(); //se crea una instancia de la aplicación express y se tipa como Application para tener soporte de tipos con TypeScript
 // const PORT: number = 3000;
 const PORT = process.env.PORT || 3000;
-app.use(express_1.default.json());
+app.use(express_1.default.json()); //Este middleware se utiliza para analizar cuerpos de solicitudes JSON automáticamente. Cuando una solicitud con un cuerpo JSON llega al servidor, express.json() convierte ese cuerpo en un objeto JavaScript accesible en req.body.
 //rutas declaradas
+//app.use('/taxis', router)
+// app.use('/trajectories', routerTrajectories)
 app.use(taxi_routes_1.default, trajectories_routes_1.default);
 //swagger
 // //const configSwagger = swaggerJSDoc(swaggerOptions);

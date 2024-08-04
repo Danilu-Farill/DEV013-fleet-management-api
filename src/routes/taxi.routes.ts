@@ -206,8 +206,16 @@ const router: Router = express.Router();
  */
 
 
-router.get('/taxis', getAllPlate);
-router.get('/taxis/:id', getIdTaxis);
+// router.get('/taxis', getAllPlate);
+// router.get('/taxis/:id', getIdTaxis);
+// router.get("/taxis/ruta/email", getEmail)
+// router.post('/taxis', createPlate);
+// router.put('/taxis/:id', updatePlate);
+// router.delete('/taxis/:id', deletePlate);
+
+
+router.get("/", getAllPlate);
+router.get('/:id', getIdTaxis);
 router.get("/taxis/ruta/email", getEmail)
 router.post('/taxis', createPlate);
 router.put('/taxis/:id', updatePlate);

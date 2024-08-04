@@ -142,7 +142,7 @@ function createFilesPrisma(params, model) {
 }
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var fileMain, type, fileJoin, fileExplore, fileCreateTaxis, fileCreateTrajectories, batchSize, index, element, fileJoinTxt, fileRead, fileSpace, _i, fileSpace_1, files, filesSplit, id, plate, spaces, dateString, taxi_id, date, latitude, longitude;
+        var fileMain, type, fileJoin, fileExplore, fileCreateTaxis, fileCreateTrajectories, batchSize, index, element, fileJoinTxt, fileRead, fileSpace, _i, fileSpace_1, files, filesSplit, id, plate, spaces, taxi_id, date, latitude, longitude;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -158,16 +158,12 @@ function main() {
                 case 1:
                     if (!(index < fileExplore.length)) return [3 /*break*/, 11];
                     element = fileExplore[index];
-                    console.log("🚀 ~ main ~ element:", element);
                     fileJoinTxt = path.join(fileJoin, element) //Construye la ruta completa a cada archivo (fileJoinTxt).
                     ;
-                    console.log("🚀 ~ main ~ fileJoinTxt:", fileJoinTxt);
                     fileRead = fs.readFileSync(fileJoinTxt, "utf-8") //Lee el contenido del archivo
                     ;
-                    console.log("🚀 ~ main ~ fileRead:", fileRead);
                     fileSpace = fileRead.split(/\r?\n/) //Divide el contenido del archivo en líneas 
                     ;
-                    console.log("🚀 ~ main ~ fileSpace:", fileSpace);
                     _i = 0, fileSpace_1 = fileSpace;
                     _a.label = 2;
                 case 2:
@@ -185,11 +181,8 @@ function main() {
                     if (spaces.length === 0) { //Verifica si spaces tiene elementos; si no, retorna.
                         return [2 /*return*/];
                     }
-                    dateString = filesSplit[1].replace(" ", "T");
-                    console.log("🚀 ~ main ~ dateString:", dateString);
                     taxi_id = parseInt(filesSplit[0]);
-                    date = new Date(dateString);
-                    console.log("🚀 ~ main ~ date:", date);
+                    date = new Date(filesSplit[1]);
                     latitude = parseFloat(filesSplit[2]);
                     longitude = parseFloat(filesSplit[3]);
                     fileCreateTrajectories.push({ taxi_id: taxi_id, date: date, latitude: latitude, longitude: longitude });
@@ -207,6 +200,7 @@ function main() {
                     return [4 /*yield*/, createFilesPrisma(fileCreateTaxis, type)];
                 case 7:
                     _a.sent();
+                    console.log("🚀 ~ main ~ type:", type);
                     fileCreateTaxis = [];
                     return [3 /*break*/, 10];
                 case 8:
@@ -214,6 +208,7 @@ function main() {
                     return [4 /*yield*/, createFilesPrisma(fileCreateTrajectories, type)];
                 case 9:
                     _a.sent();
+                    console.log("🚀 ~ main ~ type:", type);
                     fileCreateTrajectories = [];
                     _a.label = 10;
                 case 10:
@@ -226,3 +221,52 @@ function main() {
 }
 main();
 //8-02-06T22:15:29.000Z","latitude":116.98686,"longitude":40.4578} checar este archivo
+//CÓDIGO DE AYLIN
+// async function createModel() {
+//     const prisma = new PrismaClient();
+//     const args = process.argv.slice(2);
+//     let folderPath, type;
+//     for (const arg of args) {
+//         if (arg.startsWith('--type=')) {
+//             type = arg.split('=')[1]; // Extraer solo el valor del tipo
+//         } else {
+//             folderPath = arg;
+//         }
+//     }
+//     const folderToProcess = path.join(folderPath, type);
+//     console.log("🚀 ~ createModel ~ folderToProcess:", folderToProcess)
+//     const files = fs.readdirSync(folderToProcess);
+//     console.log("🚀 ~ createModel ~ files:", files)
+//     for (const file of files) {
+//         console.log("🚀 ~ createModel ~ file:", file)
+//         if (!file.endsWith('.txt')) {
+//             continue;
+//         }
+//         const filePath = path.join(folderToProcess, file);
+//         console.log("🚀 ~ createModel ~ filePath:", filePath)
+//         const readFiles = fs.readFileSync(filePath, 'utf-8');
+//         const lines = readFiles.split('\n').map(line => line.trim()).filter(Boolean);
+//         for (const line of lines) {
+//             const [field1, field2, field3, field4] = line.split(',');
+//             if (type === 'taxis') {
+//                 await prisma.taxis.create({
+//                     data: {
+//                         id: parseInt(field1),
+//                         plate: field2
+//                     }
+//                 });
+//             } else if (type === 'trajectories') {
+//                 await prisma.trajectories.create({
+//                     data: {
+//                         taxiId: parseInt(field1),
+//                         date: new Date(field2),
+//                         latitude: parseFloat(field3),
+//                         longitude: parseFloat(field4)
+//                     }
+//                 });
+//             }
+//         }
+//     }
+//     console.log("All lines processed successfully.");
+// }
+// createModel()

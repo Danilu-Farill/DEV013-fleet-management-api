@@ -99,13 +99,9 @@ async function main() {
 
   for (let index = 0; index < fileExplore.length; index++) {
     const element : string = fileExplore[index];
-    console.log("🚀 ~ main ~ element:", element)
     const fileJoinTxt: string = path.join(fileJoin, element)//Construye la ruta completa a cada archivo (fileJoinTxt).
-    console.log("🚀 ~ main ~ fileJoinTxt:", fileJoinTxt)
     const fileRead: string = fs.readFileSync(fileJoinTxt, "utf-8")//Lee el contenido del archivo
-    console.log("🚀 ~ main ~ fileRead:", fileRead)
     const fileSpace: string[] = fileRead.split(/\r?\n/)//Divide el contenido del archivo en líneas 
-    console.log("🚀 ~ main ~ fileSpace:", fileSpace)
     // const rows = fileRead.split(/\r?\n/).filter(Boolean);// DIFERENCIA??????
     // console.log("🚀 ~ main ~ rows:", rows)
     
@@ -122,11 +118,12 @@ async function main() {
         if(spaces.length === 0) {//Verifica si spaces tiene elementos; si no, retorna.
           return;
         }
-        const dateString = filesSplit[1].replace(" ", "T");
-        console.log("🚀 ~ main ~ dateString:", dateString)
+        // const dateString = filesSplit[1].replace(" ", "T");
+        // console.log("🚀 ~ main ~ dateString:", dateString)
         const taxi_id: number = parseInt(filesSplit[0]); 
-        const date: Date = new Date(dateString);
-        console.log("🚀 ~ main ~ date:", date)
+        // const date: Date = new Date(dateString);
+        // console.log("🚀 ~ main ~ date:", date)
+        const date: Date = new Date(filesSplit[1]);
         const latitude: number = parseFloat(filesSplit[2]);
         const longitude: number = parseFloat(filesSplit[3]);
         fileCreateTrajectories.push({taxi_id: taxi_id, date: date, latitude: latitude, longitude: longitude})    
@@ -144,9 +141,11 @@ async function main() {
     }
     if (type === "taxis" && fileCreateTaxis.length > 0) {
       await createFilesPrisma(fileCreateTaxis, type);
+      console.log("🚀 ~ main ~ type:", type)
       fileCreateTaxis = [];
     } else if (type === "trajectories" && fileCreateTrajectories.length > 0) {
       await createFilesPrisma(fileCreateTrajectories, type);
+      console.log("🚀 ~ main ~ type:", type)
       fileCreateTrajectories = [];
     }
   }
@@ -174,3 +173,63 @@ main();
 
 
 //8-02-06T22:15:29.000Z","latitude":116.98686,"longitude":40.4578} checar este archivo
+
+
+
+//CÓDIGO DE AYLIN
+
+// async function createModel() {
+//     const prisma = new PrismaClient();
+//     const args = process.argv.slice(2);
+
+//     let folderPath, type;
+//     for (const arg of args) {
+//         if (arg.startsWith('--type=')) {
+//             type = arg.split('=')[1]; // Extraer solo el valor del tipo
+//         } else {
+//             folderPath = arg;
+//         }
+//     }
+
+//     const folderToProcess = path.join(folderPath, type);
+//     console.log("🚀 ~ createModel ~ folderToProcess:", folderToProcess)
+//     const files = fs.readdirSync(folderToProcess);
+//     console.log("🚀 ~ createModel ~ files:", files)
+//     for (const file of files) {
+//         console.log("🚀 ~ createModel ~ file:", file)
+//         if (!file.endsWith('.txt')) {
+//             continue;
+//         }
+//         const filePath = path.join(folderToProcess, file);
+//         console.log("🚀 ~ createModel ~ filePath:", filePath)
+
+//         const readFiles = fs.readFileSync(filePath, 'utf-8');
+//         const lines = readFiles.split('\n').map(line => line.trim()).filter(Boolean);
+//         for (const line of lines) {
+//             const [field1, field2, field3, field4] = line.split(',');
+
+//             if (type === 'taxis') {
+//                 await prisma.taxis.create({
+//                     data: {
+//                         id: parseInt(field1),
+//                         plate: field2
+//                     }
+//                 });
+//             } else if (type === 'trajectories') {
+//                 await prisma.trajectories.create({
+//                     data: {
+//                         taxiId: parseInt(field1),
+//                         date: new Date(field2),
+//                         latitude: parseFloat(field3),
+//                         longitude: parseFloat(field4)
+//                     }
+//                 });
+//             }
+//         }
+
+//     }
+//     console.log("All lines processed successfully.");
+// }
+
+
+// createModel()

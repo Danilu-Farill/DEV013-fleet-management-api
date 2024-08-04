@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application } from 'express'; //Se importa express y Application de la librería express. Application es un tipo de TypeScript que se usa para tipar la constante app.
 import router from './routes/taxi.routes';
 import routerTrajectories from './routes/trajectories.routes';
 import routerSwagger from "./swagger";
@@ -16,15 +16,17 @@ import routerSwagger from "./swagger";
 // import swaggerOutput from "./swagger";
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 
-const app: Application = express();
+const app: Application = express(); //se crea una instancia de la aplicación express y se tipa como Application para tener soporte de tipos con TypeScript
 // const PORT: number = 3000;
-const PORT: any = process.env.PORT ||  3000;
+const PORT: any = process.env.PORT || 3000;
 
 
-app.use(express.json());
+app.use(express.json());//Este middleware se utiliza para analizar cuerpos de solicitudes JSON automáticamente. Cuando una solicitud con un cuerpo JSON llega al servidor, express.json() convierte ese cuerpo en un objeto JavaScript accesible en req.body.
 
 //rutas declaradas
-app.use(router, routerTrajectories);
+app.use('/taxis', router)
+// app.use('/trajectories', routerTrajectories)
+app.use(routerTrajectories);
 
 //swagger
 // //const configSwagger = swaggerJSDoc(swaggerOptions);
@@ -46,6 +48,17 @@ export default app;
 
 
 
+
+
+/*
+Claro, la función app.use() en Express es un método que se utiliza para montar middleware en una aplicación. 
+El middleware es una función que tiene acceso al objeto de solicitud (req), al objeto de respuesta (res) y a la siguiente función de 
+middleware en el ciclo de solicitud/respuesta de la aplicación.
+
+app.use(path, middleware);
+path (opcional): Especifica una ruta base para la cual se aplicará el middleware. Si no se proporciona, el middleware se aplica a todas las rutas.
+middleware: Es una función que maneja las solicitudes. Puede ser una función de middleware individual o una cadena de funciones de middleware.
+*/
 
 
 

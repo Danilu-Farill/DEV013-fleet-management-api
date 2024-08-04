@@ -122,7 +122,7 @@ const getLocation = async (req: Request, resp: Response) => {
          SELECT t.*, tx.plate
          FROM "Trajectories" t
           JOIN "Taxis" tx ON tx.id = t.taxi_id
-          WHERE t.id IN (SELECT max(id) FROM "Trajectories" t GROUP BY taxi_id)
+          IN (SELECT max(id) FROM "Trajectories" t GROUP BY taxi_id)
           OFFSET ${skip} LIMIT ${take}
            `
     resp.status(200).json(findLocation);     

@@ -207,7 +207,13 @@ const router = express_1.default.Router();
  *                    schema:
  *                           $ref: '#/components/schemas/Error'
  */
-router.get('/taxis', taxi_controller_1.getAllPlate);
+// router.get('/taxis', getAllPlate);
+// router.get('/taxis/:id', getIdTaxis);
+// router.get("/taxis/ruta/email", getEmail)
+// router.post('/taxis', createPlate);
+// router.put('/taxis/:id', updatePlate);
+// router.delete('/taxis/:id', deletePlate);
+router.get("/", taxi_controller_1.getAllPlate);
 router.get('/taxis/:id', taxi_controller_1.getIdTaxis);
 router.get("/taxis/ruta/email", taxi_controller_1.getEmail);
 router.post('/taxis', taxi_controller_1.createPlate);

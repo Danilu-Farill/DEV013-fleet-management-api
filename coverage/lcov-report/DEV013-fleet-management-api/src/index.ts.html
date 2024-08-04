@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.85% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>13/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>13/14</span>
             </div>
         
             
@@ -147,7 +147,19 @@
 <a name='L82'></a><a href='#L82'>82</a>
 <a name='L83'></a><a href='#L83'>83</a>
 <a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -165,11 +177,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -177,6 +185,11 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -185,7 +198,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -231,11 +244,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import express, { Application } from 'express';
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import express, { Application } from 'express'; //Se importa express y Application de la librería express. Application es un tipo de TypeScript que se usa para tipar la constante app.
 import router from './routes/taxi.routes';
 import routerTrajectories from './routes/trajectories.routes';
 import routerSwagger from "./swagger";
-&nbsp;
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerSetup from './swagger';
 &nbsp;
@@ -250,15 +273,17 @@ import routerSwagger from "./swagger";
 // import swaggerOutput from "./swagger";
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput));
 &nbsp;
-const app: Application = express();
-const PORT: number = 3000;
-// const PORT: any = process.env.PORT ||  3000;
+const app: Application = express(); //se crea una instancia de la aplicación express y se tipa como Application para tener soporte de tipos con TypeScript
+// const PORT: number = 3000;
+const PORT: any = process.env.PORT || <span class="branch-1 cbranch-no" title="branch not covered" >3000;</span>
 &nbsp;
 &nbsp;
-app.use(express.json());
+app.use(express.json());//Este middleware se utiliza para analizar cuerpos de solicitudes JSON automáticamente. Cuando una solicitud con un cuerpo JSON llega al servidor, express.json() convierte ese cuerpo en un objeto JavaScript accesible en req.body.
 &nbsp;
 //rutas declaradas
-app.use(router, routerTrajectories);
+app.use('/taxis', router)
+// app.use('/trajectories', routerTrajectories)
+app.use(routerTrajectories);
 &nbsp;
 //swagger
 // //const configSwagger = swaggerJSDoc(swaggerOptions);
@@ -268,8 +293,8 @@ app.use(routerSwagger)
 &nbsp;
 //condicional con el node_env sea distinto
 if(process.env.NODE_ENV !== 'test'){
-  app.listen(PORT, () =&gt; {
-    console.log('SERVER IS UP ON PORT:', PORT);
+  app.listen(PORT, <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {
+<span class="cstat-no" title="statement not covered" >    console.log('SERVER IS UP ON PORT:', PORT);</span>
   });
 }
 &nbsp;
@@ -280,6 +305,17 @@ export default app;
 &nbsp;
 &nbsp;
 &nbsp;
+&nbsp;
+&nbsp;
+/*
+Claro, la función app.use() en Express es un método que se utiliza para montar middleware en una aplicación. 
+El middleware es una función que tiene acceso al objeto de solicitud (req), al objeto de respuesta (res) y a la siguiente función de 
+middleware en el ciclo de solicitud/respuesta de la aplicación.
+&nbsp;
+app.use(path, middleware);
+path (opcional): Especifica una ruta base para la cual se aplicará el middleware. Si no se proporciona, el middleware se aplica a todas las rutas.
+middleware: Es una función que maneja las solicitudes. Puede ser una función de middleware individual o una cadena de funciones de middleware.
+*/
 &nbsp;
 &nbsp;
 &nbsp;
@@ -322,7 +358,7 @@ export default app;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-05-06T15:57:09.293Z
+                at 2024-05-23T17:12:14.644Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
